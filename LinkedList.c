@@ -177,6 +177,11 @@ size_t LL_getSize(LinkedList *list)
 
 void LL_removeAtPosition(LinkedList *list, int pos)
 {
+    if(pos >= list->lenght || pos < 0)
+    {
+        printf("Index out of range.\n");
+        return;
+    }
     if(list->head == NULL)
     {
         printf("List is empty.\n");
