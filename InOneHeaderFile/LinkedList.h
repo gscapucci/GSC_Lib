@@ -43,7 +43,6 @@ LLNode* LL_newNode(int val)
 {
     LLNode* node = (LLNode*)malloc(sizeof(LLNode));
     node->val = val;
-    node->val = val;
     node->next = NULL;
 }
 
@@ -171,37 +170,6 @@ void LL_remove(LinkedList *list, int val)
     list->size -= sizeof(LLNode);
 }
 
-void LL_removeAtPosition(LinkedList *list, int pos)
-{
-    if(list->head == NULL)
-    {
-        printf("List is empty.\n");
-        return;
-    }
-    if (pos == 0)
-    {
-        LL_removeFirst(list);
-        return;
-    }
-    if(pos == list->lenght - 1)
-    {
-        LL_removeLast(list);
-        return;
-    }
-    LLNode *aux = list->head;
-    int position = 1;
-    while (position < pos)
-    {
-        aux = aux->next;
-        position++;
-    }
-    LLNode* tmp = aux->next->next;
-    free(aux->next);
-    aux->next = tmp;
-    list->lenght--;
-    list->size -= sizeof(LLNode);
-}
-
 int LL_getAtPosition(LinkedList *list, int pos)
 {
     if(list->head == NULL)
@@ -234,6 +202,41 @@ size_t LL_getSize(LinkedList *list)
     return list->size;
 }
 
+void LL_removeAtPosition(LinkedList *list, int pos)
+{
+    if(pos >= list->lenght || pos < 0)
+    {
+        printf("Index out of range.\n");
+        return;
+    }
+    if(list->head == NULL)
+    {
+        printf("List is empty.\n");
+        return;
+    }
+    if (pos == 0)
+    {
+        LL_removeFirst(list);
+        return;
+    }
+    if(pos == list->lenght - 1)
+    {
+        LL_removeLast(list);
+        return;
+    }
+    LLNode *aux = list->head;
+    int position = 1;
+    while (position < pos)
+    {
+        aux = aux->next;
+        position++;
+    }
+    LLNode* tmp = aux->next->next;
+    free(aux->next);
+    aux->next = tmp;
+    list->lenght--;
+    list->size -= sizeof(LLNode);
+}
 
 void LL_reverse(LinkedList *list)
 {
@@ -251,5 +254,38 @@ void LL_reverse(LinkedList *list)
     list->head = cur_node;
 }
 
+LinkedList LL_subList(LinkedList *list, size_t begin_pos, size_t end_pos)
+{
+    LinkedList newLL;
+    LL_init(&newLL);
+    if(begin_pos > list->size || end_pos > list->size || begin_pos > end_pos)
+    {
+        return newLL;
+    }
+    LLNode *aux = list->head;
+    for (size_t i = 0; i < begin_pos; i++)
+    {
+        aux = aux->next;
+    }
+    for (size_t i = begin_pos; i < end_pos; i++)
+    {
+        LL_add(&newLL, aux->val);
+        aux = aux->next;
+    }
+    return newLL;
+}
+
+LinkedList LL_getCopy(LinkedList *ll)
+{
+    LinkedList newLL;
+    LL_init(&newLL);
+    LLNode *aux = ll->head;
+    for (size_t i = 0; i < ll->lenght; i++)
+    {
+        LL_add(&newLL, aux->val);
+        aux = aux->next;
+    }
+    return newLL;
+}
 
 #endif /* LINKED_LIST_H */
