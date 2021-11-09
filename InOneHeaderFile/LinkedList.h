@@ -22,10 +22,10 @@ LLNode* LL_newNode(int val);
 void    LL_add(LinkedList *list, int val);
 void    LL_clear(LinkedList *list);
 void    LL_print(LinkedList *list);
-void    LL_deleteFirst(LinkedList *list);
-void    LL_deleteLast(LinkedList *list);
-void    LL_delete(LinkedList *list, int val);
-void    LL_deleteAtPosition(LinkedList *list, int pos);
+void    LL_removeFirst(LinkedList *list);
+void    LL_removeLast(LinkedList *list);
+void    LL_remove(LinkedList *list, int val);
+void    LL_removeAtPosition(LinkedList *list, int pos);
 int     LL_getAtPosition(LinkedList *list, int pos);//return 0 if fail
 size_t  LL_getLenght(LinkedList *list);
 size_t  LL_getSize(LinkedList *list);
@@ -101,7 +101,7 @@ void LL_print(LinkedList *list)
     }
 }
 
-void LL_deleteFirst(LinkedList *list)
+void LL_removeFirst(LinkedList *list)
 {
     if(list->head == NULL)
     {
@@ -120,7 +120,7 @@ void LL_deleteFirst(LinkedList *list)
     list->size -= sizeof(LLNode);
 }
 
-void LL_deleteLast(LinkedList *list)
+void LL_removeLast(LinkedList *list)
 {
     if(list->head == NULL)
     {
@@ -146,7 +146,7 @@ void LL_deleteLast(LinkedList *list)
     list->size -= sizeof(LLNode);
 }
 
-void LL_delete(LinkedList *list, int val)
+void LL_remove(LinkedList *list, int val)
 {
     if(list->head == NULL)
     {
@@ -171,7 +171,7 @@ void LL_delete(LinkedList *list, int val)
     list->size -= sizeof(LLNode);
 }
 
-void LL_deleteAtPosition(LinkedList *list, int pos)
+void LL_removeAtPosition(LinkedList *list, int pos)
 {
     if(list->head == NULL)
     {
@@ -180,12 +180,12 @@ void LL_deleteAtPosition(LinkedList *list, int pos)
     }
     if (pos == 0)
     {
-        LL_deleteFirst(list);
+        LL_removeFirst(list);
         return;
     }
     if(pos == list->lenght - 1)
     {
-        LL_deleteLast(list);
+        LL_removeLast(list);
         return;
     }
     LLNode *aux = list->head;
