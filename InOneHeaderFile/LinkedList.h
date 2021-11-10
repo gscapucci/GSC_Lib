@@ -30,6 +30,8 @@ int     LL_getAtPosition(LinkedList *list, int pos);//return 0 if fail
 size_t  LL_getLenght(LinkedList *list);
 size_t  LL_getSize(LinkedList *list);
 void    LL_reverse(LinkedList *list);
+LinkedList  LL_subList(LinkedList *list, size_t begin_pos, size_t end_pos);//begin is inclusive, end is exclusive
+LinkedList  LL_getCopy(LinkedList *list);
 //-----------------------------------------//
 
 void LL_init(LinkedList *list)
