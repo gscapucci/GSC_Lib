@@ -17,19 +17,19 @@ typedef struct LinkedList{
     struct LLNode *head;
 }LinkedList;
 //-------------FUNCTIONS-DEFINITIONS-------//
-void    LL_init(LinkedList *list);
-LLNode* LL_newNode(int val);
-void    LL_add(LinkedList *list, int val);
-void    LL_clear(LinkedList *list);
-void    LL_print(LinkedList *list);
-void    LL_removeFirst(LinkedList *list);
-void    LL_removeLast(LinkedList *list);
-void    LL_remove(LinkedList *list, int val);
-void    LL_removeAtPosition(LinkedList *list, int pos);
-int     LL_getAtPosition(LinkedList *list, int pos);//return 0 if fail
-size_t  LL_getLenght(LinkedList *list);
-size_t  LL_getSize(LinkedList *list);
-void    LL_reverse(LinkedList *list);
+void        LL_init(LinkedList *list);
+LLNode*     LL_newNode(int val);
+void        LL_add(LinkedList *list, int val);
+void        LL_clear(LinkedList *list);
+void        LL_print(LinkedList *list);
+void        LL_removeFirst(LinkedList *list);
+void        LL_removeLast(LinkedList *list);
+void        LL_remove(LinkedList *list, int val);
+void        LL_removeAtPosition(LinkedList *list, int pos);
+int         LL_getAtPosition(LinkedList *list, int pos);//return 0 if fail
+size_t      LL_getLenght(LinkedList *list);
+size_t      LL_getSize(LinkedList *list);
+void        LL_reverse(LinkedList *list);
 LinkedList  LL_subList(LinkedList *list, size_t begin_pos, size_t end_pos);//begin is inclusive, end is exclusive
 LinkedList  LL_getCopy(LinkedList *list);
 //-----------------------------------------//
