@@ -12,7 +12,7 @@ typedef struct LLNode{
 }LLNode;
 
 typedef struct LinkedList{
-    size_t lenght;
+    size_t length;
     size_t size;//size in bytes
     struct LLNode *head;
 }LinkedList;
@@ -26,7 +26,7 @@ void        LL_removeFirst(LinkedList *list);
 void        LL_removeLast(LinkedList *list);
 void        LL_remove(LinkedList *list, int val);
 int         LL_getAtPosition(LinkedList *list, int pos);//return 0 if fail
-size_t      LL_getLenght(LinkedList *list);
+size_t      LL_getlength(LinkedList *list);
 size_t      LL_getSize(LinkedList *list);
 void        LL_removeAtPosition(LinkedList *list, int pos);
 void        LL_reverse(LinkedList *list);

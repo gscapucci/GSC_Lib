@@ -14,37 +14,46 @@ int main()
     LinkedList list;
     LL_init(&list);
 
+    printf("\nAdd 20 random number.\n");
     addRand(&list, 20);
 
     LL_print(&list);
 
+    printf("\nRemove at position 0.\n");
     LL_removeAtPosition(&list, 0);
     LL_print(&list);
 
-    LL_removeAtPosition(&list, list.lenght - 1);
+    printf("\nRemove at position list length - 1(last).\n");
+    LL_removeAtPosition(&list, list.length - 1);
     LL_print(&list);
 
-    LL_removeAtPosition(&list, list.lenght/2);
+    printf("\nRemove at position list length / 2.\n");
+    LL_removeAtPosition(&list, list.length/2);
     LL_print(&list);
 
+    printf("\nRemove first.\n");
     LL_removeFirst(&list);
     LL_print(&list);
 
+    printf("\nRemove last.\n");
     LL_removeLast(&list);
     LL_print(&list);
 
+    printf("\nReverse.\n");
     LL_reverse(&list);
     LL_print(&list);
 
-    LinkedList tsil = LL_subList(&list, 0, list.lenght/2);
-    LinkedList tsil2 = LL_subList(&list, list.lenght/2, list.lenght);
+    LinkedList sub1 = LL_subList(&list, 0, list.length/2);
+    LinkedList sub2 = LL_subList(&list, list.length/2, list.length);
 
-    LL_print(&tsil);
-    LL_print(&tsil2);
+    printf("\nSublist 1 : ");
+    LL_print(&sub1);
+    printf("\nSublist 2 : ");
+    LL_print(&sub2);
 
 
     LL_clear(&list);
-    LL_clear(&tsil2);
-    LL_clear(&tsil);
+    LL_clear(&sub1);
+    LL_clear(&sub2);
     return 0;
 }
