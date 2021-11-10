@@ -51,7 +51,7 @@ int main()
     printf("\nSublist 2: ");
     LL_print(&sub2);
 
-    printf("Size in bytes: %d", list.size);
+    printf("\nSize in bytes: %d\nSum: %d", list.size, sizeof(LLNode)*list.length + sizeof(LinkedList));
 
     LL_clear(&list);
     LL_clear(&sub1);
