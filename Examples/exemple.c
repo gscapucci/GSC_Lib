@@ -46,11 +46,12 @@ int main()
     LinkedList sub1 = LL_subList(&list, 0, list.length/2);
     LinkedList sub2 = LL_subList(&list, list.length/2, list.length);
 
-    printf("\nSublist 1 : ");
+    printf("\nSublist 1: ");
     LL_print(&sub1);
-    printf("\nSublist 2 : ");
+    printf("\nSublist 2: ");
     LL_print(&sub2);
 
+    printf("Size in bytes: %d", list.size);
 
     LL_clear(&list);
     LL_clear(&sub1);
