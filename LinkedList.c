@@ -9,7 +9,7 @@ void LL_init(LinkedList *list)
 {
     list->size = sizeof(size_t) + sizeof(int) + sizeof(LLNode*);
     list->head = NULL;
-    list->lenght = 0;
+    list->length = 0;
 }
 
 LLNode* LL_newNode(int val)
@@ -25,7 +25,7 @@ void LL_add(LinkedList *list, int val)
     {
         list->head = LL_newNode(val);
         list->size += sizeof(LLNode);
-        list->lenght++;
+        list->length++;
         return;
     }
     LLNode* aux = list->head;
@@ -35,7 +35,7 @@ void LL_add(LinkedList *list, int val)
     }
     aux->next = LL_newNode(val);
     list->size += sizeof(LLNode);
-    list->lenght++;
+    list->length++;
 }
 
 void LL_clear(LinkedList *list)
@@ -51,7 +51,7 @@ void LL_clear(LinkedList *list)
         list->head = list->head->next;
         free(aux);
     }
-    list->lenght = 0;
+    list->length = 0;
     list->size = sizeof(size_t) + sizeof(int) + sizeof(LLNode*);
 }
 
@@ -80,7 +80,7 @@ void LL_removeFirst(LinkedList *list)
         printf("List is empty.\n");
         return;
     }
-    else if(list->lenght == 1)
+    else if(list->length == 1)
     {
         free(list->head);
         list->head = NULL;
@@ -88,7 +88,7 @@ void LL_removeFirst(LinkedList *list)
     LLNode* aux = list->head;
     list->head = list->head->next;
     free(aux);
-    list->lenght--;
+    list->length--;
     list->size -= sizeof(LLNode);
 }
 
@@ -99,11 +99,11 @@ void LL_removeLast(LinkedList *list)
         printf("List is empty.\n");
         return;
     }
-    else if(list->lenght == 1)
+    else if(list->length == 1)
     {
         free(list->head);
         list->head = NULL;
-        list->lenght = 0;
+        list->length = 0;
         return;
     }
     LLNode* aux = list->head;
@@ -114,7 +114,7 @@ void LL_removeLast(LinkedList *list)
     LLNode *aux2 = aux->next;
     aux->next = NULL;
     free(aux2);
-    list->lenght--;
+    list->length--;
     list->size -= sizeof(LLNode);
 }
 
@@ -139,7 +139,7 @@ void LL_remove(LinkedList *list, int val)
     LLNode *tmp = aux->next->next;
     free(aux->next);
     aux->next = tmp;
-    list->lenght--;
+    list->length--;
     list->size -= sizeof(LLNode);
 }
 
@@ -165,9 +165,9 @@ int LL_getAtPosition(LinkedList *list, int pos)
     return 0;
 }
 
-size_t LL_getLenght(LinkedList *list)
+size_t LL_getlength(LinkedList *list)
 {
-    return list->lenght;
+    return list->length;
 }
 
 size_t LL_getSize(LinkedList *list)
@@ -177,7 +177,7 @@ size_t LL_getSize(LinkedList *list)
 
 void LL_removeAtPosition(LinkedList *list, int pos)
 {
-    if(pos >= list->lenght || pos < 0)
+    if(pos >= list->length || pos < 0)
     {
         printf("Index out of range.\n");
         return;
@@ -192,7 +192,7 @@ void LL_removeAtPosition(LinkedList *list, int pos)
         LL_removeFirst(list);
         return;
     }
-    if(pos == list->lenght - 1)
+    if(pos == list->length - 1)
     {
         LL_removeLast(list);
         return;
@@ -207,7 +207,7 @@ void LL_removeAtPosition(LinkedList *list, int pos)
     LLNode* tmp = aux->next->next;
     free(aux->next);
     aux->next = tmp;
-    list->lenght--;
+    list->length--;
     list->size -= sizeof(LLNode);
 }
 
@@ -253,7 +253,7 @@ LinkedList LL_getCopy(LinkedList *ll)
     LinkedList newLL;
     LL_init(&newLL);
     LLNode *aux = ll->head;
-    for (size_t i = 0; i < ll->lenght; i++)
+    for (size_t i = 0; i < ll->length; i++)
     {
         LL_add(&newLL, aux->val);
         aux = aux->next;
