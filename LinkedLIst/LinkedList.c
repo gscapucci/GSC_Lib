@@ -1,8 +1,4 @@
 #include "LinkedList.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <stddef.h>
 
 
 void LL_init(LinkedList *list)
