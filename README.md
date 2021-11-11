@@ -1,3 +1,2 @@
-﻿# linked-list-in-c
- Exemple output:
- ![alt text](https://github.com/gscapucci/linked-list-in-c/blob/main/Images/exemple-output.png)
+﻿# Linked list exemple:
+ ![alt text](https://github.com/gscapucci/Data-structures-in-c/blob/main/Images/LinkedList-exemple-output.png)
