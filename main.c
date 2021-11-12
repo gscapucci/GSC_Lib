@@ -1,4 +1,4 @@
-#include "InOneHeaderFile/DataStructures.h"
+#include "DataStructures.h"
 
 void add(LinkedList *ll, BinaryTree *bt, int n)
 {
@@ -9,7 +9,6 @@ void add(LinkedList *ll, BinaryTree *bt, int n)
         LL_add(ll, val);
         BT_add(bt, val);
     }
-    
 }
 
 int main()
