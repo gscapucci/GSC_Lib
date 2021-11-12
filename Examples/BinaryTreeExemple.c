@@ -1,4 +1,4 @@
-#include "../BinaryTree/BinaryTree.h"
+#include "../DataStructures/BinaryTree/BinaryTree.h"
 #include <time.h>
 void add(BinaryTree *bt, int n)
 {

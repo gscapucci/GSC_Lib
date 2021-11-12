@@ -1,4 +1,4 @@
-#include "../LinkedLIst/LinkedList.h"
+#include "../DataStructures/LinkedLIst/LinkedList.h"
 
 void addRand(LinkedList *list, int n)
 {
