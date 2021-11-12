@@ -15,13 +15,18 @@ int main()
 {
     BinaryTree bt;
     LinkedList ll;
+    
     BT_init(&bt);
     LL_init(&ll);
 
     add(&ll, &bt, 50);
     BT_printTree(&bt);
     printf("\n\n\n\n");
+
     LL_print(&ll);
+    printf("\n\n\n\n");
+
+
     BT_clear(&bt);
     LL_clear(&ll);
 }

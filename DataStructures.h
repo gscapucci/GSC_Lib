@@ -1,7 +1,7 @@
 #ifndef DATA_STRUCTURES_H
 #define DATA_STRUCTURES_H
 
-#include "BinaryTree/BinaryTree.h"
-#include "LinkedList/LinkedList.h"
+#include "../LinkedList/InOneHeaderFile/LinkedList.h"
+#include "../BinaryTree/InOneHeaderFile/BinaryTree.h"
 
 #endif /* DATA_STRUCTURES_H */
