@@ -33,7 +33,11 @@ bool _BT_add(BTNode **root, int val);
 void _BT_printInorder(BTNode *root);
 void _BT_printPreorder(BTNode *root);
 void _BT_printPostorder(BTNode *root);
-void _BT_printTree(BTNode *root);
+void _BT_printTree(BTNode *root, int *height);
 void _BT_clear(BTNode **root);
+bool _BT_remove(BTNode **root, int val);//todo remove bug
+int _BT_findSub(BTNode *root);
+int _BT_min(BTNode *root);
+int _BT_max(BTNode *root);
 
 #endif /* BINARY_TREE_H*/
