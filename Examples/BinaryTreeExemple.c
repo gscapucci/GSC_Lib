@@ -17,8 +17,8 @@ int main()
 {
     BinaryTree bt;
     BT_init(&bt);
-
     
+
     BT_clear(&bt);
     return 0;
 }
