@@ -15,6 +15,7 @@ bool BT_add(BinaryTree *bt, int val)
         printf("This value already exist in tree.\n");
         return false;
     }
+    bt->numberOfNodes++;
     return true;
 }
 
