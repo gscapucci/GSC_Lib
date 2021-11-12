@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "linkedlist.h": "c",
-        "stdio.h": "c",
-        "datastructures.h": "c",
-        "binarytree.h": "c"
-    }
-}
