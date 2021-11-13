@@ -97,10 +97,6 @@ bool _BT_add(BTNode** root, int val)
         *root = _BT_newNode(val);
         return true;
     }
-    if(val == (*root)->data)
-    {
-        return false;
-    }
     if(val > (*root)->data)
     {
         return _BT_add(&(*root)->right, val);
@@ -109,6 +105,7 @@ bool _BT_add(BTNode** root, int val)
     {
         return _BT_add(&(*root)->left, val);
     }
+    return false;
 }
 
 void _BT_printInorder(BTNode *root)
