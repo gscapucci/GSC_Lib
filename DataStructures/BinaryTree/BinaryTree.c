@@ -12,10 +12,12 @@ bool BT_add(BinaryTree *bt, int val)
     if(!ret)
     {
         printf("This value already exist in tree.\n");
-        return false;
     }
-    bt->numberOfNodes++;
-    return true;
+    else
+    {
+        bt->numberOfNodes++;
+    }
+    return ret;
 }
 
 void BT_printInorder(BinaryTree *bt)
