@@ -1,6 +1,23 @@
 #include "AVLTree.h"
 
 
+//internal functions//
+AVLTNode* _AVLT_newNode(int val);
+bool _AVLT_add(AVLTNode **root, int val);
+void _AVLT_printInorder(AVLTNode *root);//todo
+void _AVLT_printPreorder(AVLTNode *root);//todo
+void _AVLT_printPostorder(AVLTNode *root);//todo
+void _AVLT_printTree(AVLTNode *root, int *height);
+bool _AVLT_remove(AVLTNode **root, int val);
+int _AVLT_findSub(AVLTNode *root);
+int _AVLT_min(AVLTNode *root);
+int _AVLT_max(AVLTNode *root);
+void _AVLT_clear(AVLTNode **root);
+void _AVLT_rotate(AVLTNode **root);
+AVLTNode* _AVLT_rotateRight(AVLTNode *root);
+AVLTNode* _AVLT_rotateLeft(AVLTNode *root);
+int _AVLT_getBalance(AVLTNode *root);
+int _AVLT_getHeight(AVLTNode *root);
 
 void AVLT_init(AVLTree *avl)
 {
@@ -77,7 +94,7 @@ bool _AVLT_add(AVLTNode **root, int val)
         bool ret = _AVLT_add(&(*root)->right, val);
         if(ret)
         {
-            (*root)->balance++;
+            (*root)->balance = _AVLT_getBalance(*root);
             if((*root)->balance > 1)
             {
                 _AVLT_rotate(root);
@@ -90,7 +107,7 @@ bool _AVLT_add(AVLTNode **root, int val)
         bool ret = _AVLT_add(&(*root)->left, val);
         if(ret)
         {
-            (*root)->balance--;
+            (*root)->balance = _AVLT_getBalance(*root);
             if((*root)->balance < -1)
             {
                 _AVLT_rotate(root);
@@ -120,6 +137,7 @@ bool _AVLT_remove(AVLTNode **root, int val)
             int sub = _AVLT_findSub(*root);
             (void)_AVLT_remove(root, sub);
             (*root)->data = sub;
+            (*root)->balance = _AVLT_getBalance(*root);
             return true;
         }
     }
@@ -128,15 +146,7 @@ bool _AVLT_remove(AVLTNode **root, int val)
         bool retRight, retLeft;
         retRight = _AVLT_remove(&(*root)->right, val);
         retLeft = _AVLT_remove(&(*root)->left, val);
-        if(retRight)
-        {
-            (*root)->balance--;
-        }
-        else if(retLeft)
-        {
-            (*root)->balance++;
-        }
-        if(retLeft)
+        (*root)->balance = _AVLT_getBalance(*root);
         return retRight || retLeft ? true : false;
     }
 }
@@ -223,7 +233,7 @@ void _AVLT_rotate(AVLTNode **root)
     {
         (*root) = _AVLT_rotateRight(*root);
     }
-    (*root)->balance = _AVLT_correctBalance(*root);
+    (*root)->balance = _AVLT_getBalance(*root);
 }
 
 AVLTNode* _AVLT_rotateRight(AVLTNode *root)
@@ -233,7 +243,7 @@ AVLTNode* _AVLT_rotateRight(AVLTNode *root)
  
     x->right = root;
     root->left = T2;
-
+    root->balance = _AVLT_getBalance(root);
     return x;
 }
 
@@ -244,22 +254,36 @@ AVLTNode* _AVLT_rotateLeft(AVLTNode *root)
  
     y->left = root;
     root->right = T2;
+    root->balance = _AVLT_getBalance(root);
 
     return y;
 }
 
-int _AVLT_correctBalance(AVLTNode *root)
+int _AVLT_getBalance(AVLTNode *root)
 {
-    if (root == NULL)
+    int right = -1, left = -1;
+    if(root->right != NULL)
+    {
+        right = _AVLT_getHeight(root->right);
+    }
+    if(root->left != NULL)
+    {
+        left = _AVLT_getHeight(root->left);
+    }
+    return right - left;
+}
+
+int _AVLT_getHeight(AVLTNode* root) {
+    if (root == NULL) {
         return -1;
-    else {
-        int lDepth = _AVLT_correctBalance(root->left);
-        int rDepth = _AVLT_correctBalance(root->right);
- 
-        /* use the larger one */
-        if (lDepth > rDepth)
-            return (lDepth + 1);
-        else
-            return (rDepth + 1);
-    } 
+    }
+
+    int lefth = _AVLT_getHeight(root->left);
+    int righth = _AVLT_getHeight(root->right);
+
+    if (lefth > righth) {
+        return lefth + 1;
+    } else {
+        return righth + 1;
+    }
 }
