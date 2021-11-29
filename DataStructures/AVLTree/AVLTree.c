@@ -13,8 +13,8 @@ int _AVLT_findSub(AVLTNode *root);
 int _AVLT_min(AVLTNode *root);
 int _AVLT_max(AVLTNode *root);
 void _AVLT_clear(AVLTNode **root);
-void _AVLT_rotateRight(AVLTNode **root);
-void _AVLT_rotateLeft(AVLTNode **root);
+void _AVLT_rotateRight(AVLTNode **root);//todo
+void _AVLT_rotateLeft(AVLTNode **root);//todo
 int _AVLT_getBalance(AVLTNode *root);
 int _AVLT_getHeight(AVLTNode *root);
 
@@ -233,12 +233,29 @@ void _AVLT_printTree(AVLTNode *root, int *height)
 
 void _AVLT_rotateRight(AVLTNode **root)
 {
-
+    switch ((*root)->balance)
+    {
+    case -2:
+        (*root)->data = (*root)->left->data;
+        break;
+    case -1:
+        break;
+    default:
+        break;
+    }
 }
 
 void _AVLT_rotateLeft(AVLTNode **root)
 {
-    
+    switch ((*root)->balance)
+    {
+    case 2:
+        break;
+    case 1:
+        break;
+    default:
+        break;
+    }
 }
 
 int _AVLT_getBalance(AVLTNode *root)
