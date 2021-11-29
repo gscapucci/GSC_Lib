@@ -1,5 +1,17 @@
 #include "LinkedList.h"
 
+struct LinkedList{
+    size_t length;
+    size_t size;//size in bytes
+    struct LLNode *head;
+};
+
+struct LLNode{
+    int val;
+    struct LLNode *next;
+};
+
+LLNode* _LL_newNode(int val);
 
 void LL_init(LinkedList *list)
 {
@@ -8,7 +20,7 @@ void LL_init(LinkedList *list)
     list->length = 0;
 }
 
-LLNode* LL_newNode(int val)
+LLNode* _LL_newNode(int val)
 {
     LLNode* node = (LLNode*)malloc(sizeof(LLNode));
     node->val = val;
@@ -19,7 +31,7 @@ void LL_add(LinkedList *list, int val)
 {
     if(list->head == NULL)
     {
-        list->head = LL_newNode(val);
+        list->head = _LL_newNode(val);
         list->size += sizeof(LLNode);
         list->length++;
         return;
@@ -29,7 +41,7 @@ void LL_add(LinkedList *list, int val)
     {
         aux = aux->next;
     }
-    aux->next = LL_newNode(val);
+    aux->next = _LL_newNode(val);
     list->size += sizeof(LLNode);
     list->length++;
 }
