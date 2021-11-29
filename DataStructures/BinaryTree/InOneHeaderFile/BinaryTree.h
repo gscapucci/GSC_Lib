@@ -5,27 +5,32 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-typedef struct BTNode
-{
-    int data;
-    struct BTNode *left, *right;
-}BTNode;
+typedef struct BTNode BTNode;
 
-typedef struct BinaryTree
-{
-    int numberOfNodes;
-    struct BTNode* root;
-}BinaryTree;
+typedef struct BinaryTree BinaryTree;
 
-void BT_init(BinaryTree *bt);
-bool BT_add(BinaryTree *bt, int val);
+void BT_init(BinaryTree **bt);
+bool BT_add(BinaryTree **bt, int val);
 void BT_printInorder(BinaryTree *bt);
 void BT_printPreorder(BinaryTree *bt);
 void BT_printPostorder(BinaryTree *bt);
 void BT_printTree(BinaryTree *bt);
-void BT_clear(BinaryTree *bt);
-void BT_remove(BinaryTree *bt, int val);
+void BT_clear(BinaryTree **bt);
+void BT_remove(BinaryTree **bt, int val);
 
+
+
+struct BTNode
+{
+    int data;
+    struct BTNode *left, *right;
+};
+
+struct BinaryTree
+{
+    int numberOfNodes;
+    struct BTNode* root;
+};
 
 //internal functions//
 BTNode* _BT_newNode(int val);
@@ -40,22 +45,24 @@ int _BT_findSub(BTNode *root);
 int _BT_min(BTNode *root);
 int _BT_max(BTNode *root);
 
-void BT_init(BinaryTree *bt)
+void BT_init(BinaryTree **bt)
 {
-    bt->numberOfNodes = 0;
-    bt->root = NULL;
+    (*bt)->numberOfNodes = 0;
+    (*bt)->root = NULL;
 }
 
-bool BT_add(BinaryTree *bt, int val)
+bool BT_add(BinaryTree **bt, int val)
 {
-    bool ret = _BT_add(&bt->root, val);
+    bool ret = _BT_add(&(*bt)->root, val);
     if(!ret)
     {
         printf("This value already exist in tree.\n");
-        return false;
     }
-    bt->numberOfNodes++;
-    return true;
+    else
+    {
+        (*bt)->numberOfNodes++;
+    }
+    return ret;
 }
 
 void BT_printInorder(BinaryTree *bt)
@@ -99,20 +106,20 @@ void BT_printTree(BinaryTree *bt)
     _BT_printTree(bt->root, &height);
 }
 
-void BT_clear(BinaryTree *bt)
+void BT_clear(BinaryTree **bt)
 {
-    _BT_clear(&(bt->root));
-    bt->numberOfNodes = 0;
-    bt->root = NULL;
+    _BT_clear(&((*bt)->root));
+    (*bt)->numberOfNodes = 0;
+    (*bt)->root = NULL;
 }
 
-void BT_remove(BinaryTree *bt, int val)
+void BT_remove(BinaryTree **bt, int val)
 {
-    if(bt->root == NULL)
+    if((*bt)->root == NULL)
     {
         printf("Tree is empty.\n");
     }
-    bool ret = _BT_remove(&(bt->root), val);
+    bool ret = _BT_remove(&((*bt)->root), val);
     if(!ret)
     {
         printf("This value do not exist in tree\n");
@@ -135,10 +142,6 @@ bool _BT_add(BTNode** root, int val)
         *root = _BT_newNode(val);
         return true;
     }
-    if(val == (*root)->data)
-    {
-        return false;
-    }
     if(val > (*root)->data)
     {
         return _BT_add(&(*root)->right, val);
@@ -147,6 +150,7 @@ bool _BT_add(BTNode** root, int val)
     {
         return _BT_add(&(*root)->left, val);
     }
+    return false;
 }
 
 void _BT_printInorder(BTNode *root)
@@ -296,5 +300,4 @@ int _BT_max(BTNode *root)
     }
     return root->data;
 }
-
 #endif /* BINARY_TREE_H*/

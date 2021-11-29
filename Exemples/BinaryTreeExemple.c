@@ -1,6 +1,6 @@
-#include "../DataStructures/BinaryTree/BinaryTree.h"
+#include "../DataStructures/BinaryTree/InOneHeaderFile/BinaryTree.h"
 #include <time.h>
-void add(BinaryTree *bt, int n)
+void add(BinaryTree **bt, int n)
 {
     srand(time(NULL));
     for (size_t i = 0; i < n; i++)
@@ -15,9 +15,10 @@ void add(BinaryTree *bt, int n)
 
 int main()
 {
-    BinaryTree bt;
+    BinaryTree *bt;
     BT_init(&bt);
-
+    add(&bt, 50);
+    BT_printTree(bt);
     BT_clear(&bt);
     return 0;
 }

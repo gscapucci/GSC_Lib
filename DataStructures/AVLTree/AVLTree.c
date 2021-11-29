@@ -1,5 +1,16 @@
 #include "AVLTree.h"
 
+struct AVLTNode
+{
+    int data, balance;
+    struct AVLTNode *right, *left;
+};
+
+struct AVLTree
+{
+    int numberOfNodes;
+    struct AVLTNode *root;
+};
 
 //internal functions//
 AVLTNode* _AVLT_newNode(int val);
@@ -18,17 +29,18 @@ void _AVLT_rotateLeft(AVLTNode **root);//todo
 int _AVLT_getBalance(AVLTNode *root);
 int _AVLT_getHeight(AVLTNode *root);
 
-void AVLT_init(AVLTree *avl)
+void AVLT_init(AVLTree **avl)
 {
-    avl->numberOfNodes = 0;
-    avl->root = NULL;
+    (*avl) = (AVLTree *)malloc(sizeof(AVLTree));
+    (*avl)->numberOfNodes = 0;
+    (*avl)->root = NULL;
 }
 
-void AVLT_clear(AVLTree *avl)
+void AVLT_clear(AVLTree **avl)
 {
-    _AVLT_clear(&(avl->root));
-    avl->numberOfNodes = 0;
-    avl->root = NULL;
+    _AVLT_clear(&((*avl)->root));
+    free(*avl);
+    (*avl) = NULL;
 }
 
 bool AVLT_add(AVLTree *avl, int val)
@@ -42,13 +54,13 @@ void AVLT_printTree(AVLTree *avl)
     _AVLT_printTree(avl->root, &height);
 }
 
-void AVLT_remove(AVLTree *avl, int val)
+void AVLT_remove(AVLTree **avl, int val)
 {
-    if(avl->root == NULL)
+    if((*avl)->root == NULL)
     {
         printf("Tree is empty.\n");
     }
-    bool ret = _AVLT_remove(&(avl->root), val);
+    bool ret = _AVLT_remove(&((*avl)->root), val);
     if(!ret)
     {
         printf("This value do not exist in tree\n");
