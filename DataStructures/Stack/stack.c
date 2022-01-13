@@ -1,49 +1,45 @@
 #include "stack.h"
 
-const int START_CAPACITY = 10;
-
 struct Stack
 {
-    int *top;
-    size_t size, capacity;
-    int *array;
+    int64_t *value, *top;
+    uint64_t size, capacity;
 };
 
-Stack* create_stack()
+Stack* create_stack(size_t capacity)
 {
     Stack *stack = (Stack *)malloc(sizeof(Stack));
     if(stack)
     {
-        stack->capacity = START_CAPACITY;
+        stack->value = (int64_t *)malloc(capacity * sizeof(int64_t));
+        if(!stack->value)
+        {
+            printf("could not allocate for value.\n");
+        }
         stack->size = 0;
-        stack->array = (int *)malloc(START_CAPACITY * sizeof(int));
         stack->top = NULL;
+        stack->capacity = capacity;
         return stack;
+    }
+    else
+    {
+        printf("could not allocate for stack.\n");
     }
     return NULL;
 }
 
-void free_stack(Stack *stack)
+void push(Stack *stack, int64_t value)
 {
     if(stack)
     {
-        free(stack->array);
-        free(stack);
-    }
-}
-
-void push(Stack *stack, int value)
-{
-    if(stack)
-    {
-        stack->array[stack->size] = value;
-        stack->top = &stack->array[stack->size];
-        stack->size++;
         if(stack->size == stack->capacity)
         {
-            stack->array = (int *)realloc(stack->array, stack->capacity * 2);
-            stack->capacity *= 2;
+            printf("Stack is full.\n");
+            return;
         }
+        stack->value[stack->size] = value;
+        stack->top = &stack->value[stack->size];
+        stack->size++;
     }
 }
 
@@ -51,24 +47,11 @@ void pop(Stack *stack)
 {
     if(stack)
     {
+        if(stack->size == 0)
+        {
+            return;
+        }
         stack->size--;
-        stack->top = &stack->array[stack->size - 1];
-        if(stack->size == stack->capacity / 2 && stack->capacity > 10)
-        {
-            stack->array = (int *)realloc(stack->array, stack->capacity / 2);
-            stack->capacity /= 2;
-        }
-    }
-}
-
-void print_top(Stack *stack)
-{
-    if(stack)
-    {
-        if(stack->top)
-        {
-            printf("\n%d\n", *stack->top);
-        }
     }
 }
 
@@ -76,13 +59,49 @@ void print_stack(Stack *stack)
 {
     if(stack)
     {
-        if(stack->array)
+        if(stack->size == 0)
         {
-            for (size_t i = 0; i < stack->size; i++)
-            {
-                printf(" %d", stack->array[i]);
-            }
-            printf("\n");
+            printf("Stack is empty.\n");
+        }
+        for (size_t i = 0; i < stack->size; i++)
+        {
+            printf(" %d", stack->value[i]);
+        }
+    }
+}
+
+void free_stack(Stack *stack)
+{
+    if(stack)
+    {
+        free(stack->value);
+        free(stack);
+    }
+}
+
+uint64_t get_capacity(Stack *stack)
+{
+    if(stack)
+    {
+        return stack->capacity;
+    }
+}
+
+uint64_t get_size(Stack *stack)
+{
+    if(stack)
+    {
+        return stack->size;
+    }
+}
+
+uint64_t get_top(Stack *stack)
+{
+    if(stack)
+    {
+        if(stack->top)
+        {
+            return *stack->top;
         }
     }
 }
