@@ -13,6 +13,7 @@ void push(Stack *stack, int64_t value);
 void pop(Stack *stack);
 void print_stack(Stack *stack);
 void free_stack(Stack *stack);
+uint64_t sizeof_stack(Stack *stack);
 uint64_t get_capacity(Stack *stack);
 uint64_t get_size(Stack *stack);
 uint64_t get_top(Stack *stack);

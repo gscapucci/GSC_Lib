@@ -47,11 +47,10 @@ void pop(Stack *stack)
 {
     if(stack)
     {
-        if(stack->size == 0)
+        if(stack->size != 0)
         {
-            return;
+            stack->size--;
         }
-        stack->size--;
     }
 }
 
@@ -65,7 +64,7 @@ void print_stack(Stack *stack)
         }
         for (size_t i = 0; i < stack->size; i++)
         {
-            printf(" %d", stack->value[i]);
+            printf(" %ld", stack->value[i]);
         }
     }
 }
@@ -79,12 +78,20 @@ void free_stack(Stack *stack)
     }
 }
 
+uint64_t sizeof_stack(Stack *stack)
+{
+    uint64_t size = sizeof(stack);
+    size += stack->size * sizeof(int64_t);
+    return size;
+}
+
 uint64_t get_capacity(Stack *stack)
 {
     if(stack)
     {
         return stack->capacity;
     }
+    return 0;
 }
 
 uint64_t get_size(Stack *stack)
@@ -93,6 +100,7 @@ uint64_t get_size(Stack *stack)
     {
         return stack->size;
     }
+    return 0;
 }
 
 uint64_t get_top(Stack *stack)
@@ -104,4 +112,5 @@ uint64_t get_top(Stack *stack)
             return *stack->top;
         }
     }
+    return 0;
 }
