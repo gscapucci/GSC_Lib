@@ -1,28 +1,14 @@
 #include "Node.h"
-
-void *get_node_data(Node *node);
-
-void *get_node_data(Node *node)
-{
-    if(node)
-    {
-        if(node->data)
-        {
-            return node->data;
-        }
-    }
-    return NULL;
-}
-
+#include <stdio.h>
 Node *create_node(void *data, size_t size)
 {
     Node *node = (Node *)malloc(sizeof(Node));
     if(node)
     {
+        //TODO: fix this
         node->size = size;
-        node->data = (void *)malloc(size);
-        memcpy(node->data, data, size);
-        node->get_data = get_node_data;
+        node->data = malloc(size);
+        node->data = data;
         return node;
     }
     return NULL;

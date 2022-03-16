@@ -10,7 +10,6 @@ struct Node
 {
     void *data;
     size_t size;
-    void *(*get_data)(Node *self);
 };
 
 Node *create_node(void *data, size_t size);
