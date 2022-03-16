@@ -17,6 +17,6 @@ struct LinkedList
 };
 
 LinkedList create_linked_list();
-void clear(LinkedList *list);
+void clear_linked_list(LinkedList *list);
 
 #endif /* LINKED_LIST_H */

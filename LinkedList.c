@@ -75,7 +75,7 @@ LinkedList create_linked_list()
     return ll;
 }
 
-void clear(LinkedList *list)
+void clear_linked_list(LinkedList *list)
 {
     if(list)
     {
@@ -89,5 +89,7 @@ void clear(LinkedList *list)
                 next = next->next;
             }
         }
+        list->head = NULL;
+        list->length = 0;
     }
 }
