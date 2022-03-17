@@ -6,8 +6,8 @@ void push_stack(Stack *self, void *data, size_t size)
     {
         if(self->max_size != 0 && self->height == self->max_size)
         {
-            fprintf(stderr, "stack overflow");
-            return;
+            fprintf(stderr, "Error: stack overflow");
+            exit(1);
         }
         self->list.insert(&(self->list), data, size);
         self->height++;
@@ -20,11 +20,12 @@ void *pop_stack(Stack *self)
     {
         if(self->height == 0)
         {
-            fprintf(stderr, "stack underflow");
-            return NULL;
+            fprintf(stderr, "Error: stack underflow");
+            exit(1);
         }
         void *data = self->list.get(&(self->list), self->list.length - 1);
         self->list.remove(&self->list, self->list.length - 1);
+        self->height--;
         return data;
     }
     return NULL;
@@ -36,8 +37,8 @@ void *peak_stack(Stack *self)
     {
         if(self->height == 0)
         {
-            fprintf(stderr, "stack underflow");
-            return NULL;
+            fprintf(stderr, "Error: stack is empty");
+            exit(1);
         }
         return self->list.get(&(self->list), self->list.length - 1);
     }

@@ -10,6 +10,7 @@ void set_cstring(String *self, char *string);
 void set_at_pos(String *self, size_t index, char value);
 size_t get_sizeof_string(String *self);
 void print_string(String *self);
+void reverse_string(String *self);
 
 void set_functions(String *string)
 {
@@ -24,6 +25,7 @@ void set_functions(String *string)
     string->set_cstr = set_cstring;
     string->sizeof_string = get_sizeof_string;
     string->print = print_string;
+    string->reverse = reverse_string;
 }
 
 size_t get_str_lengh(String *self)
@@ -150,8 +152,23 @@ void print_string(String *self)
         if(self->_str)
         {
             printf("%s", self->_str);
+            return;
         }
     }
+    fprintf(stderr, "Error: string is empty");
+}
+
+void reverse_string(String *self)
+{
+    if(self)
+    {
+        if(self->_str)
+        {
+            strrev(self->_str);
+            return;
+        }
+    }
+    fprintf(stderr, "Error: string is empty");
 }
 
 String create_string()

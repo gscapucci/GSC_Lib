@@ -7,7 +7,7 @@ Node *create_node(void *data, size_t size)
     {
         node->size = size;
         node->data = malloc(size);
-        node->data = data;//FIXME: fix this
+        node->data = data;
         return node;
     }
     return NULL;

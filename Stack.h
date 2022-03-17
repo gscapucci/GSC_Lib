@@ -10,7 +10,7 @@ struct Stack
     LinkedList list;
     size_t max_size, height;
     void *(*pop)(Stack *self);
-    void *(*peak)(Stack *self);//TODO: peek function
+    void *(*peak)(Stack *self);
     void (*push)(Stack *self, void *data, size_t size);
 };
 

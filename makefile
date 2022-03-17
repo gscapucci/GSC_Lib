@@ -15,9 +15,10 @@ Node.o: Node.c Node.h
 
 clean:
 	del *.o
+	del *.exe
 
 run:
 	make
-	make clean
 	./main
+	make clean
 
