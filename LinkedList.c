@@ -6,6 +6,11 @@ struct LinkedList_node
     LinkedList_node *next, *prev;
 };
 
+void *get_linked_list_node(LinkedList *self, size_t index);
+LinkedList_node *create_linked_list_node(void *data, size_t size);
+void insert_linked_list_node(LinkedList *self, void *data, size_t size);
+void remove_linekd_list_node(LinkedList *self, size_t index);
+
 void *get_linked_list_node(LinkedList *self, size_t index)
 {
     if(self)
@@ -65,6 +70,36 @@ void insert_linked_list_node(LinkedList *self, void *data, size_t size)
     }
 }
 
+void remove_linekd_list_node(LinkedList *self, size_t index)
+{
+    if(self)
+    {
+        if(self->length == 0)
+        {
+            fprintf(stderr, "list is empty");
+            return;
+        }
+        if(self->length == 1)
+        {
+            free(self->head);
+            self->length = 0;
+            self->head = NULL;
+        }
+        else
+        {
+            LinkedList_node *aux = self->head;
+            for (size_t i = 0; i < index; i++)
+            {
+                aux = aux->next;
+            }
+            aux->prev->next = aux->next;
+            aux->next->prev = aux->prev;
+            free(aux);
+            self->length--;
+        }
+    }
+}
+
 LinkedList create_linked_list()
 {
     LinkedList ll;
@@ -72,6 +107,7 @@ LinkedList create_linked_list()
     ll.length = 0;
     ll.insert = insert_linked_list_node;
     ll.get = get_linked_list_node;
+    ll.remove = remove_linekd_list_node;
     return ll;
 }
 

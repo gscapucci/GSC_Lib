@@ -14,7 +14,7 @@ struct LinkedList
     size_t length;
     void (*insert)(LinkedList *self, void *data, size_t size);
     void *(*get)(LinkedList *self, size_t index);
-    void (*remove)(LinkedList *Self, size_t index);//TODO: remove function
+    void (*remove)(LinkedList *Self, size_t index);
 };
 
 LinkedList create_linked_list();

@@ -33,6 +33,7 @@ void *pop_stack(Stack *self)
 Stack create_stack(size_t max_size)
 {
     Stack stack;
+    stack.height = 0;
     stack.max_size = max_size;
     stack.list = create_linked_list();
     stack.push = push_stack;
