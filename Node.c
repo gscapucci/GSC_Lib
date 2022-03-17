@@ -1,5 +1,5 @@
 #include "Node.h"
-#include <stdio.h>
+
 Node *create_node(void *data, size_t size)
 {
     Node *node = (Node *)malloc(sizeof(Node));
