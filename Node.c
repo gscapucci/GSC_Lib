@@ -5,10 +5,9 @@ Node *create_node(void *data, size_t size)
     Node *node = (Node *)malloc(sizeof(Node));
     if(node)
     {
-        //TODO: fix this
         node->size = size;
         node->data = malloc(size);
-        node->data = data;
+        node->data = data;//FIXME: fix this
         return node;
     }
     return NULL;

@@ -21,6 +21,7 @@ struct String
     void (*print)(String *self);
     void (*clear)(String *self);
     size_t (*sizeof_string)(String *self);
+    void (*reverse)(String *self);//TODO: reverse function
 };
 
 
