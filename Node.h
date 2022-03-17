@@ -12,6 +12,6 @@ struct Node
 };
 
 Node *create_node(void *data, size_t size);
-void free_node(Node *node);
+void clear_node(Node *node);
 
 #endif /* NODE_H */

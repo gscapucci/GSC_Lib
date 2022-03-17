@@ -13,14 +13,15 @@ Node *create_node(void *data, size_t size)
     return NULL;
 }
 
-void free_node(Node *node)
+void clear_node(Node *node)
 {
     if(node)
     {
         if(node->data)
         {
             free(node->data);
+            node->data = NULL;
         }
-        free(node);
+        node->size = 0;
     }
 }

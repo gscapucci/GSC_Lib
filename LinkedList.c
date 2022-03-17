@@ -120,6 +120,7 @@ void clear_linked_list(LinkedList *list)
             LinkedList_node *curr = list->head, *next = list->head->next;
             for(size_t i = 0; i < list->length; i++)
             {
+                clear_node(curr->node);
                 free(curr);
                 curr = next;
                 next = next->next;
