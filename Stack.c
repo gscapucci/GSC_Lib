@@ -30,7 +30,7 @@ void *pop_stack(Stack *self)
     return NULL;
 }
 
-Stack createa_stack(size_t max_size)
+Stack create_stack(size_t max_size)
 {
     Stack stack;
     stack.max_size = max_size;

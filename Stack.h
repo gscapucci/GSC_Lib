@@ -15,7 +15,7 @@ struct Stack
 };
 
 //if size == 0, will not have size limit
-Stack createa_stack(size_t size);
+Stack create_stack(size_t size);
 void clear_stack(Stack *stack);
 
 #endif /* STACK_H */
