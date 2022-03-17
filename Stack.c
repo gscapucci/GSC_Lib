@@ -4,7 +4,7 @@ void push_stack(Stack *self, void *data, size_t size)
 {
     if(self)
     {
-        if(self->height == self->max_size)
+        if(self->max_size != 0 && self->height == self->max_size)
         {
             fprintf(stderr, "stack overflow");
             return;
