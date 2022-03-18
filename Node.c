@@ -1,4 +1,5 @@
 #include "Node.h"
+#include "string.h"
 
 Node *create_node(void *data, size_t size)
 {
@@ -7,7 +8,7 @@ Node *create_node(void *data, size_t size)
     {
         node->size = size;
         node->data = malloc(size);
-        node->data = data;
+        memcpy(node->data, data, size);
         return node;
     }
     return NULL;

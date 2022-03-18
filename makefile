@@ -1,16 +1,15 @@
 CC=gcc
 CFLAGS=-Wall -Wextra -pedantic
-DEBUG_FILES = main.c AVLTree.c Node.c DataTypes/String.c
-
-
-debug:
-	$(CC) -g $(DEBUG_FILES)
+DEBUG_FILES = main.c Node.c LinkedList.c Stack.c AVLTree.c DataTypes/*.c
 
 out: main.c lib.o
 	$(CC) $(CFLAGS) main.c lib.o -o main
 
-lib.o: Node.o Stack.o String.o LinkedList.o
-	$(CC) $(CFLAGS) -r Node.o Stack.o String.o LinkedList.o -o lib.o
+debug:
+	$(CC) -g $(DEBUG_FILES)
+
+lib.o: Node.o Stack.o String.o LinkedList.o AVLTree.o
+	$(CC) $(CFLAGS) -r Node.o Stack.o String.o LinkedList.o AVLTree.o -o lib.o
 
 AVLTree.o: AVLTree.c AVLTree.h Node.o
 	$(CC) $(CFLAGS) -c AVLTree.c Node.o -o AVLTree.o
@@ -29,9 +28,11 @@ Node.o: Node.c Node.h
 
 clean:
 	del *.o
-	del *.exe
+
+lib:
+	make lib.o
 
 run:
-	make
+	make out
 	./main
 	make clean
