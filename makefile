@@ -29,7 +29,8 @@ Node.o: Node.c Node.h
 	$(CC) $(CFLAGS) -c Node.c -o Node.o
 
 clean:
-	del *.o
+	del Node.o Stack.o String.o LinkedList.o AVLTree.o
+	del *.exe
 
 lib:
 	make lib.o
@@ -38,4 +39,3 @@ lib:
 run:
 	make out
 	./$(MAIN)
-	make clean
