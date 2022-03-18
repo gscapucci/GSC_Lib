@@ -6,11 +6,13 @@
 
 typedef struct AVLTree AVLTree;
 typedef struct AVLTree_node AVLTree_node;
+//TODO: implement rotations, this tree is a simple binary tree
+
 struct AVLTree
 {
     AVLTree_node *root;
     void (*insert)(AVLTree *self, void *data, size_t size);
-    void (*remove)(AVLTree *self, void *data);
+    void (*remove)(AVLTree *self, void *data);//TODO: implement remove function
     void (*print)(AVLTree *self);
 };
 /*
@@ -19,7 +21,7 @@ struct AVLTree
 *   left if -1
 *   ignored if 0
 */
-AVLTree create_avltree(int (*compare_function)(void *data1, void *data2));
+AVLTree create_avltree(int (*compare_function)(void *data1,void *data2), void (*print_function)(void *data));
 void clear_avltree(AVLTree *tree);
 
 
