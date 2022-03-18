@@ -1,5 +1,6 @@
 #include "AVLTree.h"
 
+//TODO: is this right? maybe put this into a struct? global functions?
 int (*compare)(void *data1, void *data2);
 void (*print)(void *data);
 struct AVLTree_node
