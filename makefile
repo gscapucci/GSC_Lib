@@ -12,15 +12,15 @@ lib.o: Node.o Stack.o String.o LinkedList.o AVLTree.o
 	$(CC) $(CFLAGS) -r Node.o Stack.o String.o LinkedList.o AVLTree.o -o lib.o
 
 AVLTree.o: AVLTree.c AVLTree.h Node.o
-	$(CC) $(CFLAGS) -c AVLTree.c Node.o -o AVLTree.o
+	$(CC) $(CFLAGS) -c AVLTree.c -o AVLTree.o
 
-Stack.o: Stack.c Stack.h LinkedList.h Node.h
+Stack.o: Stack.c Stack.h LinkedList.o
 	$(CC) $(CFLAGS) -c Stack.c -o Stack.o
 
 String.o: DataTypes/String.c DataTypes/String.h
 	$(CC) $(CFLAGS) -c DataTypes/String.c -o String.o
 
-LinkedList.o: LinkedList.c LinkedList.h Node.h
+LinkedList.o: LinkedList.c LinkedList.h Node.o
 	$(CC) $(CFLAGS) -c LinkedList.c -o LinkedList.o
 
 Node.o: Node.c Node.h
@@ -31,6 +31,7 @@ clean:
 
 lib:
 	make lib.o
+	del Node.o Stack.o String.o LinkedList.o AVLTree.o
 
 run:
 	make out

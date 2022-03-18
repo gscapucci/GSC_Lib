@@ -100,7 +100,7 @@ void print_tree_node(AVLTree_node *root, int height)
     {
         print_tree_node(root->left, height + 1);
     }
-    for (size_t i = 0; i < height; i++)
+    for (int i = 0; i < height; i++)
     {
         printf("    ");
     }
