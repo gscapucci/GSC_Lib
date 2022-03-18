@@ -1,9 +1,11 @@
 CC=gcc
 CFLAGS=-Wall -Wextra -pedantic
-DEBUG_FILES = main.c Node.c LinkedList.c Stack.c AVLTree.c DataTypes/*.c
+MAIN=main
+MAIN_C=$(MAIN).c
+DEBUG_FILES=$(MAIN_C) Node.c LinkedList.c Stack.c AVLTree.c DataTypes/*.c
 
-out: main.c lib.o
-	$(CC) $(CFLAGS) main.c lib.o -o main
+out: $(MAIN_C) lib.o
+	$(CC) $(CFLAGS) $(MAIN_C) lib.o -o $(MAIN)
 
 debug:
 	$(CC) -g $(DEBUG_FILES)
@@ -35,5 +37,5 @@ lib:
 
 run:
 	make out
-	./main
+	./$(MAIN)
 	make clean
