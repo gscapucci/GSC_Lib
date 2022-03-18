@@ -1,8 +1,12 @@
 #include "AVLTree.h"
+typedef struct FunctionPointers
+{
+    int (*compare)(void *data1, void *data2);
+    void (*print)(void *data);
+}FP;
 
-//TODO: is this right? maybe put this into a struct? global functions?
-int (*compare)(void *data1, void *data2);
-void (*print)(void *data);
+FP fp;
+
 struct AVLTree_node
 {
     Node *node_data;
@@ -43,7 +47,7 @@ void clear_avltree_node(AVLTree_node *root)
 
 int insert_avltree_node(AVLTree_node *root, void *data, size_t size)
 {
-    switch (compare(data, root->node_data->data))
+    switch (fp.compare(data, root->node_data->data))
     {
     case 1:
         if(root->right == NULL)
@@ -100,7 +104,7 @@ void print_tree_node(AVLTree_node *root, int height)
     {
         printf("    ");
     }
-    print(root->node_data->data);
+    fp.print(root->node_data->data);
     printf("\n");
     if(root->right)
     {
@@ -139,8 +143,8 @@ AVLTree create_avltree(int (*compare_function)(void *data1, void *data2), void (
         fprintf(stderr, "Error: somethng is wrong with print_function");
         exit(1);
     }
-    compare = compare_function;
-    print = print_function;
+    fp.compare = compare_function;
+    fp.print = print_function;
     tree.insert = insert_avltree;
     tree.print = print_tree;
     tree.root = NULL;
