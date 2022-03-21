@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS=-Wall -Wextra -pedantic
 MAIN=main
 MAIN_C=$(MAIN).c
-DEBUG_FILES=$(MAIN_C) Nodes/Node.c LinkedList.c Stack.c AVLTree.c DataTypes/String.c DataTypes/Dictionary.c
+DEBUG_FILES=$(MAIN_C) Nodes/Node.c Nodes/DictionaryNode.c LinkedList.c Stack.c AVLTree.c DataTypes/String.c DataTypes/Dictionary.c
 
 out: $(MAIN_C) lib.o
 	$(CC) $(CFLAGS) $(MAIN_C) lib.o -o $(MAIN)
