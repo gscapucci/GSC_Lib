@@ -108,27 +108,27 @@ void *_search_node(AVLTree_node *root, void *data)
         {
             if(root->node_data->data)
             {
-                    if(!fp.compare(data, root->node_data->data))
-                    {
-                        return root->node_data->data;
-                    }
-                    void *p1 = NULL, *p2 = NULL;
-                    if(root->left)
-                    {
-                        p1 = _search_node(root->left, data);
-                    }
-                    if(root->right)
-                    {
-                        p2 = _search_node(root->right, data);
-                    }
-                    if(p1 != NULL)
-                    {
-                        return p1;
-                    }
-                    else if(p2 != NULL)
-                    {
-                        return p2;
-                    }
+                if(!fp.compare(data, root->node_data->data))
+                {
+                    return root->node_data->data;
+                }
+                void *p1 = NULL, *p2 = NULL;
+                if(root->left)
+                {
+                    p1 = _search_node(root->left, data);
+                }
+                if(root->right)
+                {
+                    p2 = _search_node(root->right, data);
+                }
+                if(p1 != NULL)
+                {
+                    return p1;
+                }
+                else if(p2 != NULL)
+                {
+                    return p2;
+                }
             }
         }
     }
