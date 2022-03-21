@@ -8,12 +8,13 @@ int compare(void *data1, void *data2);
 void print_node(void *data);
 
 void insert_dict(Dictionary *self, void *key, size_t key_size, void *value, size_t value_size);
-void *search_dict_node(Dictionary *self, void *data, size_t size);
-void *get_dict_node_value(Dictionary *self, void *data, size_t size);
+void *search_dict_node(Dictionary *self, void *data);
+void *get_dict_node_value(Dictionary *self, void *data);
 
 int compare(void *data1, void *data2)
 {
-    return comapre_node((*(DictionaryNode *)data1).key, (*(DictionaryNode *)data2).key);
+    
+    return comapre_node(data1, (*(DictionaryNode *)data2).key);
 }
 
 void print_node(void *data)
@@ -36,21 +37,22 @@ void insert_dict(Dictionary *self, void *key, size_t key_size, void *value, size
     }
 }
 
-void *search_dict_node(Dictionary *self, void *data, size_t size)
+void *search_dict_node(Dictionary *self, void *data)
 {
     if(self)
     {
-        return self->_tree.get(&self->_tree, data, size);
+        return self->_tree.get(&self->_tree, data);
     }
     return NULL;
 }
 
-void *get_dict_node_value(Dictionary *self, void *data, size_t size)
+void *get_dict_node_value(Dictionary *self, void *data)
 {
     if(self)
     {
-        return (*(DictionaryNode *)self->_tree.get(&self->_tree, data, size)).value;
+        return (*(DictionaryNode *)self->_tree.get(&self->_tree, data)).value;
     }
+    fprintf(stderr, "not found");
     return NULL;
 }
 

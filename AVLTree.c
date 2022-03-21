@@ -19,9 +19,9 @@ struct AVLTree_node
 AVLTree_node *create_avltree_node(void *data, size_t size);
 void clear_avltree_node(AVLTree_node *root);
 int insert_avltree_node(AVLTree_node *root, void *data, size_t size);
-void *search_node(AVLTree_node *root, void *data, size_t size);
+void *search_node(AVLTree_node *root, void *data);
 void insert_avltree(AVLTree *self, void *data, size_t size);
-void *get_avltree_node(AVLTree *self, void *data, size_t size);
+void *get_avltree_node(AVLTree *self, void *data);
 void print_tree_node(AVLTree_node *root, int height);
 void print_tree(AVLTree *self);
 
@@ -36,6 +36,7 @@ AVLTree_node *create_avltree_node(void *data, size_t size)
         node->right = NULL;
         return node;
     }
+    fprintf(stderr, "node not created");
     return NULL;
 }
 
@@ -100,7 +101,7 @@ int insert_avltree_node(AVLTree_node *root, void *data, size_t size)
     }
 }
 
-void *search_node(AVLTree_node *root, void *data, size_t size)
+void *search_node(AVLTree_node *root, void *data)
 {
     if(root)
     {
@@ -108,27 +109,18 @@ void *search_node(AVLTree_node *root, void *data, size_t size)
         {
             if(root->node_data->data)
             {
-                if(root->node_data->size > size)
-                {
-                    if(memcmp(root->node_data->data, data, root->node_data->size))
+                    if(!fp.compare(data, root->node_data->data))
                     {
                         return root->node_data->data;
                     }
-                }
-                else if(memcmp(root->node_data->data, data, size))
-                {
-                    return root->node_data->data;
-                }
-                else
-                {
                     void *p1 = NULL, *p2 = NULL;
                     if(root->left)
                     {
-                        p1 = search_node(root->left, data, size);
+                        p1 = search_node(root->left, data);
                     }
                     if(root->right)
                     {
-                        p2 = search_node(root->right, data, size);
+                        p2 = search_node(root->right, data);
                     }
                     if(p1 != NULL)
                     {
@@ -136,20 +128,19 @@ void *search_node(AVLTree_node *root, void *data, size_t size)
                     }
                     else if(p2 != NULL)
                     {
-                        return p1;
+                        return p2;
                     }
-                }
             }
         }
     }
     return NULL;
 }
 
-void *get_avltree_node(AVLTree *self, void *data, size_t size)
+void *get_avltree_node(AVLTree *self, void *data)
 {
     if(self)
     {
-        return search_node(self->root, data, size);
+        return search_node(self->root, data);
     }
     return NULL;
 }

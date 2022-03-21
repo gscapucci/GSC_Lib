@@ -12,7 +12,7 @@ struct AVLTree
 {
     AVLTree_node *root;
     void (*insert)(AVLTree *self, void *data, size_t size);
-    void *(*get)(AVLTree *self, void *data, size_t size);
+    void *(*get)(AVLTree *self, void *data);
     void (*remove)(AVLTree *self, void *data);//TODO: implement remove function
     void (*print)(AVLTree *self);
 };

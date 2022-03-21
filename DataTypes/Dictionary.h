@@ -10,8 +10,8 @@ struct Dictionary
 {
     AVLTree _tree;
     void (*insert)(Dictionary *self, void *key, size_t key_size, void *value, size_t value_size);
-    void *(*search)(Dictionary *self, void *data, size_t size);
-    void *(*get)(Dictionary *self, void *data, size_t size);
+    void *(*search)(Dictionary *self, void *data);
+    void *(*get)(Dictionary *self, void *data);
     void (*remove)(Dictionary *self, void *data);//TODO: remove function
 };
 
