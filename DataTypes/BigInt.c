@@ -8,7 +8,7 @@ void assign_bigint_(BigInt *self, BigInt *number);
 void assign_int_(BigInt *self, long long number);
 int compare_bigint_to_bigint(BigInt *self, BigInt *number);
 int compare_bigint_to_int(BigInt *self, long long number);
-void *sum_bigint(BigInt *self, BigInt *number);
+void sum_bigint(BigInt *self, BigInt *number);
 
 //------------------------ //
 
@@ -90,7 +90,7 @@ int compare_bigint_to_int(BigInt *self, long long number)
     return 0;
 }
 
-void *sum_bigint(BigInt *self, BigInt *number)
+void sum_bigint(BigInt *self, BigInt *number)
 {
     if(self && number)
     {
