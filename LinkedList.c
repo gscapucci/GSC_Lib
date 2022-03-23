@@ -23,9 +23,19 @@ void *get_linked_list_node(LinkedList *self, size_t index)
         if(self->head)
         {
             LinkedList_node *aux = self->head;
-            for (size_t i = 0; i < index; i++)
+            if(index > self->length / 2)
             {
-                aux = aux->next;
+                for (size_t i = 0; i < self->length - index; i++)
+                {
+                    aux = aux->prev;
+                }
+            }
+            else
+            {
+                for (size_t i = 0; i < index; i++)
+                {
+                    aux = aux->next;
+                }
             }
             return aux->node->data;
         }
