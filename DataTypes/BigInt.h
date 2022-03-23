@@ -1,7 +1,6 @@
 #ifndef BIG_INT_H
 #define BIG_INT_H
 
-#include <stdint.h>
 #include <stdbool.h>
 #include <math.h>
 #include <stdio.h>
