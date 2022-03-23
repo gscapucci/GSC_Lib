@@ -11,7 +11,7 @@ debug:
 	$(CC) -g $(DEBUG_FILES)
 
 gsc_lib.o: Node.o Stack.o String.o LinkedList.o AVLTree.o Dictionary.o DictionaryNode.o BigInt.o
-	$(CC) $(CFLAGS) -r Node.o Stack.o String.o LinkedList.o AVLTree.o Dictionary.o DictionaryNode.o -o gsc_lib.o
+	$(CC) $(CFLAGS) -r Node.o Stack.o String.o LinkedList.o AVLTree.o Dictionary.o DictionaryNode.o BigInt.o -o gsc_lib.o
 
 Dictionary.o: DataTypes/Dictionary.c DataTypes/Dictionary.h
 	$(CC) $(CFLAGS) -c DataTypes/Dictionary.c -o Dictionary.o
@@ -38,7 +38,7 @@ BigInt.o: DataTypes/BigInt.c DataTypes/BigInt.h
 	$(CC) $(CFLAGS) -c DataTypes/BigInt.c -o BigInt.o
 
 clean:
-	del Node.o Stack.o String.o LinkedList.o AVLTree.o DictionaryNode.o Dictionary.o gsc_lib.o
+	del Node.o Stack.o String.o LinkedList.o AVLTree.o DictionaryNode.o Dictionary.o BigInt.o gsc_lib.o
 	del *.exe
 
 lib:
