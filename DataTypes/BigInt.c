@@ -109,7 +109,7 @@ void sum_bigint(BigInt *self, BigInt *number)
         if(self->lengh > number->lengh)
         {
             size_t diff = self->lengh - number->lengh;
-            uint8_t *numberCopy = (uint8_t)malloc(self->lengh * sizeof(uint8_t));
+            uint8_t *numberCopy = (uint8_t *)malloc(self->lengh * sizeof(uint8_t));
             for (size_t i = 0; i < diff; i++)
             {
                 numberCopy[i] = 0;
@@ -120,11 +120,23 @@ void sum_bigint(BigInt *self, BigInt *number)
             }
             free(number->_number);
             memcpy(number->_number, numberCopy, self->lengh);
+            free(numberCopy);
         }
         else if(self->lengh < number->lengh)
         {
             size_t diff = number->lengh - self->lengh;
-            //TODO: self->lengh < number->lengh
+            uint8_t *self_numberCopy = (uint8_t *)malloc(number->lengh * sizeof(uint8_t));
+            for (size_t i = 0; i < diff; i++)
+            {
+                self_numberCopy[i] = 0;
+            }
+            for (size_t i = diff; i < number->lengh; i++)
+            {
+                self_numberCopy[i] = number->_number[i - diff];
+            }
+            free(self->_number);
+            memcpy(self->_number, self_numberCopy, number->lengh);
+            free(self_numberCopy);
         }
         uint8_t *sum = (uint8_t *)malloc(self->lengh * sizeof(uint8_t) + 1);
         for (size_t i = 0; i < self->lengh + 1; i++)
