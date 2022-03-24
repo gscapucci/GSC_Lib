@@ -46,5 +46,6 @@ lib:
 	del Node.o Stack.o String.o LinkedList.o AVLTree.o DictionaryNode.o Dictionary.o BigInt.o
 
 run:
+	make debug
 	make out
-	./$(MAIN)
+	./main
