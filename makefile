@@ -47,5 +47,5 @@ lib:
 
 run:
 	make debug
-	make out
+	make
 	./main

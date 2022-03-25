@@ -5,8 +5,8 @@ void set_bigint_functions(BigInt *bigint);
 void long_long_to_int(uint8_t *num_array, long long number, size_t lengh);
 
 void print_bigint(BigInt *self);
-void assign_bigint_(BigInt *self, BigInt *number);
-void assign_int_(BigInt *self, long long number);
+void assign_bigint(BigInt *self, BigInt *number);
+void assign_int(BigInt *self, long long number);
 int compare_bigint_to_bigint(BigInt *self, BigInt *number);
 int compare_bigint_to_int(BigInt *self, long long number);
 void sum_bigint(BigInt *self, BigInt *number);
@@ -16,7 +16,7 @@ void sum_int(BigInt *self, long long number);
 void set_bigint_functions(BigInt *bigint)
 {
     bigint->Print = print_bigint;
-    bigint->Assign_bigint = assign_bigint_;
+    bigint->Assign_bigint = assign_bigint;
     bigint->Compare_bigint = compare_bigint_to_bigint;
     bigint->Compare_int = compare_bigint_to_int;
     bigint->Sum_bigint = sum_bigint;
@@ -44,7 +44,7 @@ void print_bigint(BigInt *self)
     }
 }
 
-void assign_bigint_(BigInt *self, BigInt *number)
+void assign_bigint(BigInt *self, BigInt *number)
 {
     if(self)
     {
@@ -53,7 +53,7 @@ void assign_bigint_(BigInt *self, BigInt *number)
     }
 }
 
-void assign_int_(BigInt *self, long long number)
+void assign_int(BigInt *self, long long number)
 {
     if(self)
     {
