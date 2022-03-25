@@ -2,7 +2,7 @@
 
 //--functions-definitions--//
 void set_bigint_functions(BigInt *bigint);
-void long_long_to_uint8_t(uint8_t *num_array, long long number, size_t lengh);
+void long_long_to_int(uint8_t *num_array, long long number, size_t lengh);
 
 void print_bigint(BigInt *self);
 void assign_bigint_(BigInt *self, BigInt *number);
@@ -10,6 +10,7 @@ void assign_int_(BigInt *self, long long number);
 int compare_bigint_to_bigint(BigInt *self, BigInt *number);
 int compare_bigint_to_int(BigInt *self, long long number);
 void sum_bigint(BigInt *self, BigInt *number);
+void sum_int(BigInt *self, long long number);
 //------------------------ //
 
 void set_bigint_functions(BigInt *bigint)
@@ -19,9 +20,10 @@ void set_bigint_functions(BigInt *bigint)
     bigint->Compare_bigint = compare_bigint_to_bigint;
     bigint->Compare_int = compare_bigint_to_int;
     bigint->Sum_bigint = sum_bigint;
+    bigint->Sum_int = sum_int;
 }
 
-void long_long_to_uint8_t(uint8_t *num_array, long long number, size_t lengh)
+void long_long_to_int(uint8_t *num_array, long long number, size_t lengh)
 {
     for (size_t i = 0; i < lengh; i++)
     {
@@ -95,7 +97,9 @@ int compare_bigint_to_int(BigInt *self, long long number)
     if(self)
     {
         BigInt aux = construct_from_int(number);
-        return self->Compare_bigint(self, &aux);
+        int ret = self->Compare_bigint(self, &aux);
+        clear_bigint(&aux);
+        return ret;
     }
     fprintf(stderr, "input was not valid");
     exit(1);
@@ -114,12 +118,14 @@ void sum_bigint(BigInt *self, BigInt *number)
             {
                 numberCopy[i] = 0;
             }
-            for (size_t i = diff; i < number->lengh; i++)
+            for (size_t i = diff; i < self->lengh; i++)
             {
                 numberCopy[i] = number->_number[i - diff];
             }
             free(number->_number);
-            memcpy(number->_number, numberCopy, self->lengh);
+            number->_number = (uint8_t *)malloc(self->lengh * sizeof(uint8_t));
+            number->lengh = self->lengh;
+            memcpy(number->_number, numberCopy, self->lengh * sizeof(uint8_t));
             free(numberCopy);
         }
         else if(self->lengh < number->lengh)
@@ -132,10 +138,12 @@ void sum_bigint(BigInt *self, BigInt *number)
             }
             for (size_t i = diff; i < number->lengh; i++)
             {
-                self_numberCopy[i] = number->_number[i - diff];
+                self_numberCopy[i] = self->_number[i - diff];
             }
             free(self->_number);
-            memcpy(self->_number, self_numberCopy, number->lengh);
+            self->_number = (uint8_t *)malloc(number->lengh * sizeof(uint8_t));
+            self->lengh = number->lengh;
+            memcpy(self->_number, self_numberCopy, number->lengh * sizeof(uint8_t));
             free(self_numberCopy);
         }
         uint8_t *sum = (uint8_t *)malloc(self->lengh * sizeof(uint8_t) + 1);
@@ -143,7 +151,6 @@ void sum_bigint(BigInt *self, BigInt *number)
         {
             sum[i] = 0;
         }
-        
         uint8_t carry = 0;
         size_t sum_pos = 0;
         for (size_t i = self->lengh - 1;; i--)
@@ -177,16 +184,23 @@ void sum_bigint(BigInt *self, BigInt *number)
             self->_number[i] = self->_number[self->lengh - 1 - i];
             self->_number[self->lengh - 1 - i] = temp;
         }
-        for (size_t i = 0; i < self->lengh; i++)
-        {
-            printf("%d", self->_number[i]);
-        }
-        printf("\n");
-        
         free(sum);
         return;
     }
     fprintf(stderr, "invalid inputs");
+    exit(1);
+}
+
+void sum_int(BigInt *self, long long number)
+{
+    if(self)
+    {
+        BigInt aux = construct_from_int(number);
+        self->Sum_bigint(self, &aux);
+        clear_bigint(&aux);
+        return;
+    }
+    fprintf(stderr, "invaid input");
     exit(1);
 }
 
@@ -215,7 +229,7 @@ BigInt construct_from_int(long long number)
     }
     new_bigint.lengh = floor(log10(number)) + 1;
     new_bigint._number = (uint8_t *)malloc(new_bigint.lengh * sizeof(uint8_t));
-    long_long_to_uint8_t(new_bigint._number, number, new_bigint.lengh);
+    long_long_to_int(new_bigint._number, number, new_bigint.lengh);
     set_bigint_functions(&new_bigint);
     return new_bigint;
 }
@@ -226,28 +240,17 @@ BigInt construct_from_bigint(BigInt *bigint)
     new_bigint.lengh = bigint->lengh;
     new_bigint.positive = bigint->positive;
     new_bigint._number = (uint8_t *)malloc(bigint->lengh * sizeof(uint8_t));
-    memcpy(new_bigint._number, bigint->_number, new_bigint.lengh + 1);
+    memcpy(new_bigint._number, bigint->_number, new_bigint.lengh * sizeof(uint8_t));
     set_bigint_functions(&new_bigint);
     return new_bigint;
 }
 
 BigInt construct_from_string(const char *number)
 {
-    BigInt new_bigint;
-    new_bigint.positive = true;
-    int count = 0;
-    if(number[0] == '-')
-    {
-        new_bigint.positive = false;
-        count = 1;
-    }
-    
-    new_bigint.lengh = strlen(number) - count;
-    new_bigint._number = (uint8_t *)malloc(strlen(number) + 1 - count);
-    memcpy(new_bigint._number, number + count, new_bigint.lengh);
-    set_bigint_functions(&new_bigint);
-    return new_bigint;
-
+    //TODO: this
+    fprintf(stderr, "not implemented yet");
+    (void)number;
+    return *(BigInt *)0;
 }
 
 void clear_bigint(BigInt *bigint)
