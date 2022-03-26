@@ -11,6 +11,7 @@ int compare_bigint_to_bigint(BigInt *self, BigInt *number);
 int compare_bigint_to_int(BigInt *self, long long number);
 void sum_bigint(BigInt *self, BigInt *number);
 void sum_int(BigInt *self, long long number);
+void sub_bigint(BigInt *self, BigInt *number);
 //------------------------ //
 
 void set_bigint_functions(BigInt *bigint)
@@ -21,6 +22,7 @@ void set_bigint_functions(BigInt *bigint)
     bigint->Compare_int = compare_bigint_to_int;
     bigint->Sum_bigint = sum_bigint;
     bigint->Sum_int = sum_int;
+    bigint->Sub_bigint = sub_bigint;
 }
 
 void long_long_to_int(uint8_t *num_array, long long number, size_t lengh)
@@ -110,7 +112,27 @@ void sum_bigint(BigInt *self, BigInt *number)
 {
     if(self && number)
     {
-        if(self->lengh > number->lengh)
+        if(self->positive != number->positive)
+        {
+            switch (self->Compare_bigint(self, number))
+            {
+            case 0:
+                free(self->_number);
+                self->_number = (char *)malloc(sizeof(char));
+                self->_number[0] = 0;
+                self->positive = true;
+                self->lengh = 1;
+                return;
+            case -1:
+                self->positive = number->positive;
+            case 1:
+                self->Sub_bigint(&self, number);
+                return;
+            default:
+                return;
+            }
+        }
+        else if(self->lengh > number->lengh)
         {
             size_t diff = self->lengh - number->lengh;
             uint8_t *numberCopy = (uint8_t *)malloc(self->lengh * sizeof(uint8_t));
@@ -201,6 +223,42 @@ void sum_int(BigInt *self, long long number)
         return;
     }
     fprintf(stderr, "invaid input");
+    exit(1);
+}
+
+void sub_bigint(BigInt *self, BigInt *number)
+{
+    if(self && number)
+    {
+        if(self->positive ^ number->positive)
+        {
+            self->Sum_bigint(self, number);
+            return;
+        }
+        else
+        {
+            int comp = self->Compare_bigint(self, number);
+            switch (comp)
+            {
+            case 0:
+                free(self->_number);
+                self->_number = (char *)malloc(sizeof(char));
+                self->_number[0] = 0;
+                self->lengh = 1;
+                self->positive = true;
+                return;
+            case 1:
+                self->positive  = self->positive;
+            case -1:
+                //TODO: sub
+                return;
+            default:
+                break;
+            }
+            return;
+        }
+    }
+    fprintf(stderr, "invalid input");
     exit(1);
 }
 
