@@ -5,52 +5,49 @@ MAIN_C=$(MAIN).c
 DEBUG_FILES=$(MAIN_C) Nodes/Node.c Nodes/DictionaryNode.c LinkedList.c Stack.c AVLTree.c DataTypes/String.c DataTypes/Dictionary.c DataTypes/BigInt.c
 
 out: $(MAIN_C) gsc_lib.o
-	$(CC) $(CFLAGS) $(MAIN_C) Ofiles/gsc_lib.o -o $(MAIN)
+	$(CC) $(CFLAGS) $(MAIN_C) Ofiles/gsc_lib.o -o bin/$(MAIN) -lm
 
 debug:
-	$(CC) -g $(DEBUG_FILES)
+	$(CC) -g $(DEBUG_FILES) -o bin/a -lm
 
-gsc_lib.o: Node.o Ofiles/Stack.o Ofiles/String.o Ofiles/LinkedList.o Ofiles/AVLTree.o Ofiles/Dictionary.o Ofiles/DictionaryNode.o Ofiles/BigInt.o
-	$(CC) $(CFLAGS) -r Ofiles/Node.o Ofiles/Stack.o Ofiles/String.o Ofiles/LinkedList.o Ofiles/AVLTree.o Ofiles/Dictionary.o Ofiles/DictionaryNode.o Ofiles/BigInt.o -o Ofiles/gsc_lib.o
+gsc_lib.o: Node.o Stack.o String.o LinkedList.o AVLTree.o Dictionary.o DictionaryNode.o BigInt.o
+	$(CC) $(CFLAGS) -r Ofiles/Node.o Ofiles/Stack.o Ofiles/String.o Ofiles/LinkedList.o Ofiles/AVLTree.o Ofiles/Dictionary.o Ofiles/DictionaryNode.o Ofiles/BigInt.o -o Ofiles/gsc_lib.o -lm
 
 Dictionary.o: DataTypes/Dictionary.c DataTypes/Dictionary.h
-	$(CC) $(CFLAGS) -c DataTypes/Dictionary.c -o Ofiles/Dictionary.o
+	$(CC) $(CFLAGS) -c DataTypes/Dictionary.c -o Ofiles/Dictionary.o -lm
 
-AVLTree.o: AVLTree.c AVLTree.h Ofiles/Node.o
-	$(CC) $(CFLAGS) -c AVLTree.c -o Ofiles/AVLTree.o
+AVLTree.o: AVLTree.c AVLTree.h Node.o
+	$(CC) $(CFLAGS) -c AVLTree.c -o Ofiles/AVLTree.o -lm
 
-Stack.o: Stack.c Stack.h Ofiles/LinkedList.o
-	$(CC) $(CFLAGS) -c Stack.c -o Ofiles/Stack.o
+Stack.o: Stack.c Stack.h LinkedList.o
+	$(CC) $(CFLAGS) -c Stack.c -o Ofiles/Stack.o -lm
 
 String.o: DataTypes/String.c DataTypes/String.h
-	$(CC) $(CFLAGS) -c DataTypes/String.c -o Ofiles/String.o
+	$(CC) $(CFLAGS) -c DataTypes/String.c -o Ofiles/String.o -lm
 
-LinkedList.o: LinkedList.c LinkedList.h Ofiles/Node.o
-	$(CC) $(CFLAGS) -c LinkedList.c -o Ofiles/LinkedList.o
+LinkedList.o: LinkedList.c LinkedList.h Node.o
+	$(CC) $(CFLAGS) -c LinkedList.c -o Ofiles/LinkedList.o -lm
 
 Node.o: Nodes/Node.c Nodes/Node.h
-	$(CC) $(CFLAGS) -c Nodes/Node.c -o Ofiles/Node.o
+	$(CC) $(CFLAGS) -c Nodes/Node.c -o Ofiles/Node.o -lm
 
 DictionaryNode.o: Nodes/DictionaryNode.c Nodes/DictionaryNode.h
-	$(CC) $(CFLAGS) -c Nodes/DictionaryNode.c -o Ofiles/DictionaryNode.o
+	$(CC) $(CFLAGS) -c Nodes/DictionaryNode.c -o Ofiles/DictionaryNode.o -lm
 
 BigInt.o: DataTypes/BigInt.c DataTypes/BigInt.h
-	$(CC) $(CFLAGS) -c DataTypes/BigInt.c -o Ofiles/BigInt.o
+	$(CC) $(CFLAGS) -c DataTypes/BigInt.c -o Ofiles/BigInt.o -lm
 
 clean:
 	cd Ofiles
 	del Node.o Stack.o String.o LinkedList.o AVLTree.o DictionaryNode.o Dictionary.o BigInt.o gsc_lib.o
-	del *.exe
 	cd ..
+	cd bin
 	del *.exe
 
 lib:
 	make gsc_lib.o
-	cd Ofiles
-	del Node.o Stack.o String.o LinkedList.o AVLTree.o DictionaryNode.o Dictionary.o BigInt.o
-	cd ..
 
 run:
 	make debug
 	make
-	./main
+	./bin/main

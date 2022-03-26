@@ -164,7 +164,13 @@ void reverse_string(String *self)
     {
         if(self->_str)
         {
-            strrev(self->_str);
+            char temp;
+            size_t i = 0, j = strlen(self->_str) - 1;
+            while(i < j) {
+                temp = self->_str[i];
+                self->_str[i++] = self->_str[j];
+                self->_str[j--] = temp;
+            }
             return;
         }
     }
