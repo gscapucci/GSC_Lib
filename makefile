@@ -11,31 +11,31 @@ debug:
 	$(CC) -g $(DEBUG_FILES) -o bin/a -lm
 
 gsc_lib.o: Node.o Stack.o String.o LinkedList.o AVLTree.o Dictionary.o DictionaryNode.o BigInt.o
-	$(CC) $(CFLAGS) -r Ofiles/Node.o Ofiles/Stack.o Ofiles/String.o Ofiles/LinkedList.o Ofiles/AVLTree.o Ofiles/Dictionary.o Ofiles/DictionaryNode.o Ofiles/BigInt.o -o Ofiles/gsc_lib.o -lm
+	$(CC) $(CFLAGS) -r Ofiles/Node.o Ofiles/Stack.o Ofiles/String.o Ofiles/LinkedList.o Ofiles/AVLTree.o Ofiles/Dictionary.o Ofiles/DictionaryNode.o Ofiles/BigInt.o -o Ofiles/gsc_lib.o
 
 Dictionary.o: DataTypes/Dictionary.c DataTypes/Dictionary.h
-	$(CC) $(CFLAGS) -c DataTypes/Dictionary.c -o Ofiles/Dictionary.o -lm
+	$(CC) $(CFLAGS) -c DataTypes/Dictionary.c -o Ofiles/Dictionary.o
 
 AVLTree.o: AVLTree.c AVLTree.h Node.o
-	$(CC) $(CFLAGS) -c AVLTree.c -o Ofiles/AVLTree.o -lm
+	$(CC) $(CFLAGS) -c AVLTree.c -o Ofiles/AVLTree.o
 
 Stack.o: Stack.c Stack.h LinkedList.o
-	$(CC) $(CFLAGS) -c Stack.c -o Ofiles/Stack.o -lm
+	$(CC) $(CFLAGS) -c Stack.c -o Ofiles/Stack.o
 
 String.o: DataTypes/String.c DataTypes/String.h
-	$(CC) $(CFLAGS) -c DataTypes/String.c -o Ofiles/String.o -lm
+	$(CC) $(CFLAGS) -c DataTypes/String.c -o Ofiles/String.o
 
 LinkedList.o: LinkedList.c LinkedList.h Node.o
-	$(CC) $(CFLAGS) -c LinkedList.c -o Ofiles/LinkedList.o -lm
+	$(CC) $(CFLAGS) -c LinkedList.c -o Ofiles/LinkedList.o
 
 Node.o: Nodes/Node.c Nodes/Node.h
-	$(CC) $(CFLAGS) -c Nodes/Node.c -o Ofiles/Node.o -lm
+	$(CC) $(CFLAGS) -c Nodes/Node.c -o Ofiles/Node.o
 
 DictionaryNode.o: Nodes/DictionaryNode.c Nodes/DictionaryNode.h
-	$(CC) $(CFLAGS) -c Nodes/DictionaryNode.c -o Ofiles/DictionaryNode.o -lm
+	$(CC) $(CFLAGS) -c Nodes/DictionaryNode.c -o Ofiles/DictionaryNode.o
 
 BigInt.o: DataTypes/BigInt.c DataTypes/BigInt.h
-	$(CC) $(CFLAGS) -c DataTypes/BigInt.c -o Ofiles/BigInt.o -lm
+	$(CC) $(CFLAGS) -c DataTypes/BigInt.c -o Ofiles/BigInt.o
 
 clean:
 	cd Ofiles

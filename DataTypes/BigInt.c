@@ -4,6 +4,7 @@
 void set_bigint_functions(BigInt *bigint);
 void long_long_to_uint8_t(uint8_t *num_array, long long number, size_t lengh);
 void str_to_uint8_t(uint8_t *num_array, const char *number, uint8_t start);
+int abs_compare(BigInt *self, BigInt *number);
 
 void print_bigint(BigInt *self);
 void assign_bigint(BigInt *self, BigInt *number);
@@ -42,6 +43,35 @@ void str_to_uint8_t(uint8_t *num_array, const char *number, uint8_t start)
     {
         num_array[i] = number[i + start] - '0';
     }
+}
+
+int abs_compare(BigInt *self, BigInt *number)
+{
+    if(self && number)
+    {
+        if(self->lengh > number->lengh)
+        {
+            return 1;
+        }
+        if(self->lengh < number->lengh)
+        {
+            return -1;
+        }
+        for(size_t i = 0; i < self->lengh; i++)
+        {
+            if(self->_number[i] > number->_number[i])
+            {
+                return 1;
+            }
+            if(self->_number[i] < number->_number[i])
+            {
+                return -1;
+            }
+        }
+        return 0;
+    }
+    fprintf(stderr, "invalid imput");
+    exit(1);
 }
 
 void print_bigint(BigInt *self)
@@ -99,9 +129,8 @@ int compare_bigint_to_bigint(BigInt *self, BigInt *number)
         }
         return 0;
     }
-    fprintf(stderr, "one or two inputs was not valid");
+    fprintf(stderr, "invalid imput");
     exit(1);
-    return -2;
 }
 
 int compare_bigint_to_int(BigInt *self, long long number)
@@ -115,7 +144,6 @@ int compare_bigint_to_int(BigInt *self, long long number)
     }
     fprintf(stderr, "input was not valid");
     exit(1);
-    return 0;
 }
 
 void sum_bigint(BigInt *self, BigInt *number)
@@ -250,6 +278,18 @@ void sub_bigint(BigInt *self, BigInt *number)
         else
         {
             int comp = self->Compare_bigint(self, number);
+            int abs_comp = abs_compare(self, number);
+            if(comp != abs_comp)
+            {
+                if(comp == -1)
+                {
+                    self->positive = false;
+                }
+                else
+                {
+                    self->positive = true;
+                }
+            }
             switch (comp)
             {
             case 0:
@@ -260,21 +300,34 @@ void sub_bigint(BigInt *self, BigInt *number)
                 self->positive = true;
                 return;
             case -1:
-                self->positive = !self->positive;
+                self->positive = number->positive;
             case 1:
                 //TODO: sub
-                if(comp == 1)
+                if(abs_comp == 1)
                 {
-                    size_t max = self->lengh, min = number->lengh;
+                    size_t max, min;
+                    max = self->lengh;
+                    min = number->lengh;
+                    size_t diff = max - min;
+                    uint8_t *numberCopy = (uint8_t *)malloc(max * sizeof(uint8_t));
+                    for (size_t i = 0; i < diff; i++)
+                    {
+                        numberCopy[i] = 0;
+                    }
+                    for (size_t i = diff; i < max; i++)
+                    {
+                        numberCopy[i] = number->_number[diff - i];
+                    }
                     uint8_t *res = (uint8_t *)malloc(max * sizeof(uint8_t));
                     size_t res_pos = max - 1;
-                    for (size_t i = min - 1;; i--)
+                    size_t j = 0;
+                    for (j = max - 1;; j--)
                     {
-                        int8_t aux = self->_number[i] - number->_number[i];
+                        int8_t aux = self->_number[j] - numberCopy[j];
                         while(aux < 0)
                         {
                             aux += 10;
-                            int8_t aux2 = i - 1;
+                            int8_t aux2 = j - 1;
                             do
                             {
                                 if(self->_number[aux2] != 0)
@@ -290,12 +343,12 @@ void sub_bigint(BigInt *self, BigInt *number)
                         }
                         res[res_pos] = aux;
                         res_pos--;
-                        if(i == 0)
+                        if(j == 0)
                         {
                             break;
                         }
                     }
-
+                    
                     size_t ped = 0;
                     for (size_t i = max - 1;; i--)
                     {
@@ -306,24 +359,39 @@ void sub_bigint(BigInt *self, BigInt *number)
                         ped++;
                     }
                     free(self->_number);
+                    free(numberCopy);
                     self->_number = (uint8_t *)malloc((max - ped) * sizeof(uint8_t));
                     self->lengh = max - ped;
                     memcpy(self->_number, res + ped, max - ped);
                     free(res);
                     return;
                 }
-                else //comp == -1
+                else if(abs_comp == -1)
                 {
-                    size_t max = number->lengh, min = self->lengh;
+                    size_t max, min;
+                    max = number->lengh;
+                    min = self->lengh;
+                    size_t diff = max - min;
+                    uint8_t *selfCopy = (uint8_t *)malloc(max * sizeof(uint8_t));
+                    for (size_t i = 0; i < diff; i++)
+                    {
+                        selfCopy[i] = 0;
+                    }
+                    for (size_t i = diff; i < max; i++)
+                    {
+                        selfCopy[i] = number->_number[diff - i];
+                    }
                     uint8_t *res = (uint8_t *)malloc(max * sizeof(uint8_t));
                     size_t res_pos = max - 1;
-                    for (size_t i = min - 1;; i--)
+                    size_t j = 0;
+                    for (j = max - 1;; j--)
                     {
-                        int8_t aux = number->_number[i] - self->_number[i];
+                        printf("%d : %d\n", number->_number[j], selfCopy[j]);
+                        int8_t aux = number->_number[j] - selfCopy[j];
                         while(aux < 0)
                         {
                             aux += 10;
-                            int8_t aux2 = i - 1;
+                            int8_t aux2 = j - 1;
                             do
                             {
                                 if(number->_number[aux2] != 0)
@@ -333,33 +401,39 @@ void sub_bigint(BigInt *self, BigInt *number)
                                 }
                                 else
                                 {
-                                    number--;
+                                    aux2--;
                                 }
                             }while (true);
                         }
                         res[res_pos] = aux;
                         res_pos--;
-                        if(i == 0)
+                        if(j == 0)
                         {
                             break;
                         }
                     }
+                    
                     size_t ped = 0;
-                    for (size_t i = 0; i < max; i--)
+                    for (size_t i = max - 1;; i--)
                     {
-                        if(res[i] != 0)
+                        if(i == 0 || res[i] != 0)
                         {
                             break;
                         }
                         ped++;
                     }
                     free(self->_number);
+                    free(selfCopy);
                     self->_number = (uint8_t *)malloc((max - ped) * sizeof(uint8_t));
                     self->lengh = max - ped;
                     memcpy(self->_number, res + ped, max - ped);
                     free(res);
+                    return;
                 }
-                return;
+                else
+                {
+                    fprintf(stderr, "error");
+                }
             default:
                 break;
             }
