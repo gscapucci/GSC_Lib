@@ -26,12 +26,12 @@ struct BigInt{
     int (*Compare_int)(BigInt *self, long long number);
 
     void (*Sum_bigint)(BigInt *self, BigInt *number);
-    void (*Sub_bigint)(BigInt *self, BigInt *number); //TODO: sub bigint function
+    void (*Sub_bigint)(BigInt *self, BigInt *number);
     void (*Mul_bigint)(BigInt *self, BigInt *number); //TODO: mul bigint function
     void (*Div_bigint)(BigInt *self, BigInt *number); //TODO: div bigint function
 
     void (*Sum_int)(BigInt *self, long long number);
-    void (*Sub_int)(BigInt *self, long long number); //TODO: sub int function
+    void (*Sub_int)(BigInt *self, long long number);
     void (*Mul_int)(BigInt *self, long long number); //TODO: mul int function
     void (*Div_int)(BigInt *self, long long number); //TODO: div int function
 

@@ -14,6 +14,7 @@ int compare_bigint_to_int(BigInt *self, long long number);
 void sum_bigint(BigInt *self, BigInt *number);
 void sum_int(BigInt *self, long long number);
 void sub_bigint(BigInt *self, BigInt *number);
+void sub_int(BigInt *self, long long number);
 //------------------------ //
 
 void set_bigint_functions(BigInt *bigint)
@@ -25,6 +26,7 @@ void set_bigint_functions(BigInt *bigint)
     bigint->Sum_bigint = sum_bigint;
     bigint->Sum_int = sum_int;
     bigint->Sub_bigint = sub_bigint;
+    bigint->Sub_int = sub_int;
 }
 
 void long_long_to_uint8_t(uint8_t *num_array, long long number, size_t lengh)
@@ -302,7 +304,6 @@ void sub_bigint(BigInt *self, BigInt *number)
             case -1:
                 self->positive = number->positive;
             case 1:
-                //TODO: sub
                 if(abs_comp == 1)
                 {
                     size_t max, min;
@@ -441,6 +442,19 @@ void sub_bigint(BigInt *self, BigInt *number)
         }
     }
     fprintf(stderr, "invalid input");
+    exit(1);
+}
+
+void sub_int(BigInt *self, long long number)
+{
+    if(self)
+    {
+        BigInt aux = construct_from_int(number);
+        self->Sub_bigint(self, &aux);
+        clear_bigint(&aux);
+        return;
+    }
+    fprintf(stderr, "invalid impus");
     exit(1);
 }
 
