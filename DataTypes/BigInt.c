@@ -72,7 +72,7 @@ int abs_compare(BigInt *self, BigInt *number)
         }
         return 0;
     }
-    fprintf(stderr, "invalid imput");
+    fprintf(stderr, "invalid input");
     exit(1);
 }
 
@@ -131,7 +131,7 @@ int compare_bigint_to_bigint(BigInt *self, BigInt *number)
         }
         return 0;
     }
-    fprintf(stderr, "invalid imput");
+    fprintf(stderr, "invalid input");
     exit(1);
 }
 

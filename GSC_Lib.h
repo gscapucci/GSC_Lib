@@ -6,5 +6,6 @@
 #include "DataTypes/BigInt.h"
 #include "Stack.h" //stack includes Node.h and LinkedList.h
 #include "AVLTree.h" // avltree includes Node.h
+#include "FileManagment/FileManager.h"
 
 #endif /* GSC_LIB_H */
