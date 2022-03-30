@@ -2,7 +2,7 @@ cc=gcc
 CFLAGS=-Wall -Wextra -pedantic
 
 out: cat.c FileManager.o
-	gcc cat.c FileManager.o -o cat
+	gcc cat.c FileManager.o -o ./bin/cat
 debug:
 	gcc -g cat.c ../FileManagment/FileManager.c
 

@@ -13,8 +13,8 @@ struct FileManager
     char *_file_path;
     void (*Set_file)(FileManager *self, char *path);
     void (*Cat_file)(FileManager *self);
-    void (*Read_file)(FileManager *self/*??, void *data, size_t size_of_data??*/); //TODO: this
-    void (*Write_file)(FileManager *self /*??, void data, size_t size_of_data??*/); //TODO: this
+    void (*Read_file_line)(FileManager *self, void *data, size_t size_of_data); //TODO: this
+    void (*Write_file_line)(FileManager *self, void *data, size_t size_of_data); //TODO: this
 };
 
 FileManager createa_file_manager();

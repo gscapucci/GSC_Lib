@@ -8,8 +8,12 @@ int main(int argc, char **argv)
         exit(1);
     }
     FileManager fm = createa_file_manager();
-    fm.Set_file(&fm, argv[1]);
-    fm.Cat_file(&fm);
+    for (size_t i = 1; i < argc; i++)
+    {
+        fm.Set_file(&fm, argv[i]);
+        printf("\n\nFILE: %s:\n\n", argv[i]);
+        fm.Cat_file(&fm);
+    }
     clear_file_manager(&fm);
     return 0;
 }
