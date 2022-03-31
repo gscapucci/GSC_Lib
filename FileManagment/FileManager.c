@@ -6,14 +6,15 @@ void set_file_manager_functions(FileManager *fm);
 void set_file(FileManager *self, char *path);
 void cat_file(FileManager *self);
 void write_file(FileManager *self, void *data, size_t size_of_data);
+void read_file(FileManager *self, void *data, size_t size_of_data);
 //---------------------------//
 
 void set_file_manager_functions(FileManager *fm)
 {
     fm->Set_file = set_file;
     fm->Cat_file = cat_file;
-    fm->Write_file_line = NULL;
-    fm->Read_file_line = NULL;
+    fm->Write_file_line = write_file;
+    fm->Read_file_line = read_file;
 }
 
 void set_file(FileManager *self, char *path)
@@ -27,6 +28,8 @@ void set_file(FileManager *self, char *path)
         }
         self->_file_path = (char *)malloc((strlen(path) + 1) * sizeof(char));
         strcpy(self->_file_path, path);
+        self->_file = fopen(path, "wb");
+        fclose(self->_file);
         return;
     }
     fprintf(stderr, "invalid input");
@@ -61,6 +64,19 @@ void write_file(FileManager *self, void *data, size_t size_of_data)
     {
         self->_file = fopen(self->_file_path, "ab");
         fwrite(data, size_of_data, 1, self->_file);
+        fclose(self->_file);
+        return;
+    }
+    fprintf(stderr, "invalid input");
+    exit(1);
+}
+
+void read_file(FileManager *self, void *data, size_t size_of_data)
+{
+    if(self && data)
+    {
+        self->_file = fopen(self->_file_path, "rb");
+        fread(data, size_of_data, 1, self->_file);
         fclose(self->_file);
         return;
     }
