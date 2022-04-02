@@ -36,6 +36,7 @@ struct BigInt{
     void (*Div_int)(BigInt *self, long long number); //TODO: div int function
 
     void (*Get_copy)(BigInt *self); //TODO: this function
+    char *(*To_char_ptr)(BigInt *self);
     int (*To_int)(); //TODO: this function
     long (*To_long)(); //TODO: this function
     long long (*To_long_long)(); //TODO: this function

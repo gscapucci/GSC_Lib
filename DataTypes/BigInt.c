@@ -15,6 +15,7 @@ void sum_bigint(BigInt *self, BigInt *number);
 void sum_int(BigInt *self, long long number);
 void sub_bigint(BigInt *self, BigInt *number);
 void sub_int(BigInt *self, long long number);
+char *to_char_ptr(BigInt *self);
 //------------------------ //
 
 void set_bigint_functions(BigInt *bigint)
@@ -27,6 +28,7 @@ void set_bigint_functions(BigInt *bigint)
     bigint->Sum_int = sum_int;
     bigint->Sub_bigint = sub_bigint;
     bigint->Sub_int = sub_int;
+    bigint->To_char_ptr = to_char_ptr;
 }
 
 void long_long_to_uint8_t(uint8_t *num_array, long long number, size_t lengh)
@@ -72,7 +74,7 @@ int abs_compare(BigInt *self, BigInt *number)
         }
         return 0;
     }
-    fprintf(stderr, "invalid input");
+    fprintf(stderr, "invalid input in function abs_compare");
     exit(1);
 }
 
@@ -131,7 +133,7 @@ int compare_bigint_to_bigint(BigInt *self, BigInt *number)
         }
         return 0;
     }
-    fprintf(stderr, "invalid input");
+    fprintf(stderr, "invalid input in function compare_bigint_to_bigint");
     exit(1);
 }
 
@@ -251,7 +253,7 @@ void sum_bigint(BigInt *self, BigInt *number)
         free(sum);
         return;
     }
-    fprintf(stderr, "invalid inputs");
+    fprintf(stderr, "invalid inputs in function sum_bigint");
     exit(1);
 }
 
@@ -441,7 +443,7 @@ void sub_bigint(BigInt *self, BigInt *number)
             return;
         }
     }
-    fprintf(stderr, "invalid input");
+    fprintf(stderr, "invalid input in function sub_bigint");
     exit(1);
 }
 
@@ -454,7 +456,23 @@ void sub_int(BigInt *self, long long number)
         clear_bigint(&aux);
         return;
     }
-    fprintf(stderr, "invalid impus");
+    fprintf(stderr, "invalid inputs in function sub_int");
+    exit(1);
+}
+
+char *to_char_ptr(BigInt *self)
+{
+    if(self)
+    {
+        char *ret = (char *)malloc((self->lengh + 1) * sizeof(char));
+        for (size_t i = 0; i < self->lengh; i++)
+        {
+            ret[i] = (char)(self->_number + '0');
+        }
+        ret[self->lengh] = '\0';
+        return ret;
+    }
+    fprintf(stderr, "invalid input in function to_char_ptr");
     exit(1);
 }
 
@@ -507,14 +525,14 @@ BigInt construct_from_string(const char *number)
     {
         if(!isdigit(number[0]) && number[0] != '-')
         {
-            fprintf(stderr, "invalid input");
+            fprintf(stderr, "invalid input in function construct_from_string");
             exit(1);
         }
         for (size_t i = 1; i < strlen(number); i++)
         {
             if(!isdigit(number[i]))
             {
-                fprintf(stderr, "invalid input");
+                fprintf(stderr, "invalid input in function construct_from_string");
                 exit(1);
             }
         }
@@ -531,7 +549,7 @@ BigInt construct_from_string(const char *number)
         set_bigint_functions(&new_bigint);
         return new_bigint;
     }
-    fprintf(stderr, "invalid number");
+    fprintf(stderr, "invalid number in function construct_from_string");
     exit(1);
 }
 
