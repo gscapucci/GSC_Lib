@@ -23,6 +23,9 @@ void _insert_avltree(AVLTree *self, void *data, size_t size);
 void *_get_avltree_node(AVLTree *self, void *data);
 void _print_tree_node(AVLTree_node *root, int height);
 void _print_tree(AVLTree *self);
+void *_get_at(AVLTree *self, size_t index);
+void *_get_at_node(AVLTree_node *root, size_t cur, size_t index);
+
 AVLTree_node *_create_avltree_node(void *data, size_t size)
 {
     AVLTree_node *node = (AVLTree_node *)malloc(sizeof(AVLTree_node));
@@ -148,12 +151,44 @@ void _insert_avltree(AVLTree *self, void *data, size_t size)
     if(!self->root)
     {
         self->root = _create_avltree_node(data, size);
+        self->number_of_nodes++;
         return;
     }
     if(_insert_avltree_node(self->root, data, size) != 0)
     {
         self->number_of_nodes++;
     }
+}
+
+void *_get_at(AVLTree *self, size_t index)
+{
+    if(self)
+    {
+        if(index >= self->number_of_nodes)
+        {
+            fprintf(stderr, "index out of range");
+            exit(1);
+        }
+        return _get_at_node(self->root, 0, index);
+    }
+    fprintf (stderr, "invalid input");
+    exit(1);
+}
+
+void *_get_at_node(AVLTree_node *root, size_t cur, size_t index)
+{
+    if(root)
+    {
+        if(root->left)
+        {
+            
+        }
+        if(root->right)
+        {
+
+        }
+    }
+    return NULL;
 }
 
 AVLTree create_avltree(int (*compare_function)(void *data1, void *data2))
@@ -167,6 +202,7 @@ AVLTree create_avltree(int (*compare_function)(void *data1, void *data2))
     fp.compare = compare_function;
     tree.get = _get_avltree_node;
     tree.insert = _insert_avltree;
+    tree.get_at = _get_at;
     tree.root = NULL;
     return tree;
 }

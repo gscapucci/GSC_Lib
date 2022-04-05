@@ -14,6 +14,7 @@ struct AVLTree
     size_t number_of_nodes;
     void (*insert)(AVLTree *self, void *data, size_t size);
     void *(*get)(AVLTree *self, void *data);
+    void *(*get_at)(AVLTree *self, size_t index);
     void (*remove)(AVLTree *self, void *data);//TODO: implement remove function
 };
 /*

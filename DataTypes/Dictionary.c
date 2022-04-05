@@ -8,6 +8,9 @@ void insert_dict(Dictionary *self, void *key, size_t key_size, void *value, size
 bool search_dict_node(Dictionary *self, void *data);
 void *get_dict_node_value(Dictionary *self, void *data);
 size_t get_lengh(Dictionary *self);
+DictionaryNode *take_next(Dictionary *self);
+void *get_at(Dictionary *self, size_t index);
+
 
 int _compare(void *data1, void *data2)
 {
@@ -20,6 +23,7 @@ void insert_dict(Dictionary *self, void *key, size_t key_size, void *value, size
     {
         DictionaryNode *node = create_dictionary_node(key, key_size, value, value_size);
         self->_tree.insert(&self->_tree, node, sizeof(DictionaryNode) + key_size + value_size);
+        clear_dictionary_node(node);
         free(node);
     }
 }
@@ -56,6 +60,47 @@ size_t get_lengh(Dictionary *self)
     exit(1);
 }
 
+void *get_at(Dictionary *self, size_t index)
+{
+    if(self)
+    {
+        DictionaryNode *data = (DictionaryNode *)self->_tree.get_at(&self->_tree, index);
+        if(data == NULL)
+        {
+            fprintf(stderr, "error in get_at function");
+            exit(1);
+        }
+        return data;
+    }
+    fprintf(stderr, "invalid input");
+    exit(1);
+}
+
+DictionaryNode *take_next(Dictionary *self)
+{
+    if(self)
+    {
+        if(self->lengh(self) == 0)
+        {
+            fprintf(stderr, "dictonary is empty");
+            exit(1);
+        }
+        if(self->ite.pos == DICT_BEG)
+        {
+            self->ite.index = 0;
+        }
+        void *data = self->get_at(self, self->ite.index);
+        self->ite.index++;
+        if(self->ite.index == self->lengh(self))
+        {
+            self->ite.pos = DICT_END;
+        }
+        return (DictionaryNode *)data;
+    }
+    fprintf(stderr, "invalif input");
+    exit(1);
+}
+
 Dictionary create_dictionary(int (*compare_key)(void *key1, void *key2))
 {
     Dictionary dict;
@@ -65,6 +110,10 @@ Dictionary create_dictionary(int (*compare_key)(void *key1, void *key2))
     dict.insert = insert_dict;
     dict._tree = create_avltree(_compare);
     dict.lengh = get_lengh;
+    dict.get_at = get_at;
+    dict.take_next = take_next;
+    dict.ite.pos = DICT_BEG;
+    dict.ite.index = 0;
     return dict;
 }
 
