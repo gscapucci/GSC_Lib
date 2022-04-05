@@ -4,8 +4,8 @@
 void set_bigint_functions(BigInt *bigint);
 void long_long_to_uint8_t(uint8_t *num_array, long long number, size_t lengh);
 void str_to_uint8_t(uint8_t *num_array, const char *number, uint8_t start);
-int abs_compare(BigInt *self, BigInt *number);
 
+int abs_compare(BigInt *self, BigInt *number);
 void print_bigint(BigInt *self);
 void assign_bigint(BigInt *self, BigInt *number);
 void assign_int(BigInt *self, long long number);
@@ -467,7 +467,7 @@ char *to_char_ptr(BigInt *self)
         char *ret = (char *)malloc((self->lengh + 1) * sizeof(char));
         for (size_t i = 0; i < self->lengh; i++)
         {
-            ret[i] = (char)(self->_number + '0');
+            ret[i] = (char)(self->_number[i] + '0');
         }
         ret[self->lengh] = '\0';
         return ret;

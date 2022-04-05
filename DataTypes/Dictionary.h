@@ -9,6 +9,7 @@ typedef struct Dictionary Dictionary;
 struct Dictionary
 {
     AVLTree _tree;
+    size_t (*lengh)(Dictionary *self);
     void (*insert)(Dictionary *self, void *key, size_t key_size, void *value, size_t value_size);
     bool (*search)(Dictionary *self, void *data);
     void *(*get)(Dictionary *self, void *data);

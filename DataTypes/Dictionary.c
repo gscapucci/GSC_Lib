@@ -7,6 +7,7 @@ int _compare(void *data1, void *data2);
 void insert_dict(Dictionary *self, void *key, size_t key_size, void *value, size_t value_size);
 bool search_dict_node(Dictionary *self, void *data);
 void *get_dict_node_value(Dictionary *self, void *data);
+size_t get_lengh(Dictionary *self);
 
 int _compare(void *data1, void *data2)
 {
@@ -45,6 +46,15 @@ void *get_dict_node_value(Dictionary *self, void *data)
     return NULL;
 }
 
+size_t get_lengh(Dictionary *self)
+{
+    if(self)
+    {
+        return self->_tree.number_of_nodes;
+    }
+    fprintf(stderr, "invalid input");
+    exit(1);
+}
 
 Dictionary create_dictionary(int (*compare_key)(void *key1, void *key2))
 {
@@ -54,6 +64,7 @@ Dictionary create_dictionary(int (*compare_key)(void *key1, void *key2))
     dict.search = search_dict_node;
     dict.insert = insert_dict;
     dict._tree = create_avltree(_compare);
+    dict.lengh = get_lengh;
     return dict;
 }
 

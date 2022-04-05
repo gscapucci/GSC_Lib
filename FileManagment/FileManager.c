@@ -112,7 +112,6 @@ void read_file_line(FileManager *self, void *data, size_t size_of_data)
             fprintf(stderr, "WARNNING: you allocate to much memory to read this line POS: %zu\nYou need %zu, you allocate %zu\n", ftell(self->_file) - line_len, line_len, size_of_data);
         }
         fread(data, line_len, 1, self->_file);
-        fseek(self->_file, self->_file_pos, SEEK_SET);
         fclose(self->_file);
         return;
     }
@@ -138,14 +137,25 @@ size_t get_line_size(FileManager *self)
 {
     if(self)
     {
+        if(self->_file_pos >= self->Get_file_size(self))
+        {
+            fprintf(stderr, "trying to read at the end of file");
+            exit(1);
+        }
         self->_file = fopen(self->_file_path, "r+b");
-        fseek(self->_file, self->_file_pos, SEEK_SET);
+        fseek(self->_file, 0, SEEK_SET);
         char c;
         size_t line_size = 0;
         while((c = fgetc(self->_file)) != '\n')
         {
+            if(c == EOF)
+            {
+                fprintf(stderr, "error in reading");
+                exit(1);
+            }
             line_size++;
         }
+        fclose(self->_file);
         return line_size;
     }
     fprintf(stderr, "invalid input in function get_line_size");

@@ -11,6 +11,7 @@ typedef struct AVLTree_node AVLTree_node;
 struct AVLTree
 {
     AVLTree_node *root;
+    size_t number_of_nodes;
     void (*insert)(AVLTree *self, void *data, size_t size);
     void *(*get)(AVLTree *self, void *data);
     void (*remove)(AVLTree *self, void *data);//TODO: implement remove function
