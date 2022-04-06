@@ -1,12 +1,11 @@
 #ifndef DICTIONARY_H
 #define DICTIONARY_H
 
-#include "../AVLTree.h"
+#include "../DataStructures/AVLTree.h"
 #include "../Nodes/DictionaryNode.h"
 #include <stdbool.h>
 
 typedef struct Dictionary Dictionary;
-typedef struct DictionaryIterator DictionaryIterator;
 
 typedef enum IteratorPos
 {
@@ -14,15 +13,16 @@ typedef enum IteratorPos
     DICT_CUR,
     DICT_END
 }IteratorPos;
-struct DictionaryIterator
-{
-    size_t index;
-    IteratorPos pos;
-};
+
 struct Dictionary
 {
-    AVLTree _tree;
-    DictionaryIterator ite;
+    AVLTree _tree; 
+    struct
+    {
+        size_t index;
+        IteratorPos pos;
+    }iterator;
+
     size_t (*lengh)(Dictionary *self);
     DictionaryNode *(*take_next)(Dictionary *self);
     void (*insert)(Dictionary *self, void *key, size_t key_size, void *value, size_t value_size);

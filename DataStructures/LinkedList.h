@@ -1,7 +1,7 @@
 #ifndef LINKED_LIST_H
 #define LINKED_LIST_H
 
-#include "Nodes/Node.h"
+#include "../Nodes/Node.h"
 #include <errno.h>
 #include <stdio.h>
 

@@ -1,7 +1,7 @@
 #ifndef AVL_TREE_H
 #define AVL_TREE_H
 
-#include "Nodes/Node.h"
+#include "../Nodes/Node.h"
 #include <stdio.h>
 
 typedef struct AVLTree AVLTree;

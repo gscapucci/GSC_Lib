@@ -85,16 +85,16 @@ DictionaryNode *take_next(Dictionary *self)
             fprintf(stderr, "dictonary is empty");
             exit(1);
         }
-        if(self->ite.pos == DICT_BEG)
+        if(self->iterator.pos == DICT_BEG)
         {
-            self->ite.index = 0;
-            self->ite.pos = DICT_CUR;
+            self->iterator.index = 0;
+            self->iterator.pos = DICT_CUR;
         }
-        void *data = self->get_at(self, self->ite.index);
-        self->ite.index++;
-        if(self->ite.index == self->lengh(self))
+        void *data = self->get_at(self, self->iterator.index);
+        self->iterator.index++;
+        if(self->iterator.index == self->lengh(self))
         {
-            self->ite.pos = DICT_END;
+            self->iterator.pos = DICT_END;
         }
         return (DictionaryNode *)data;
     }
@@ -113,8 +113,8 @@ Dictionary create_dictionary(int (*compare_key)(void *key1, void *key2))
     dict.lengh = get_lengh;
     dict.get_at = get_at;
     dict.take_next = take_next;
-    dict.ite.pos = DICT_BEG;
-    dict.ite.index = 0;
+    dict.iterator.pos = DICT_BEG;
+    dict.iterator.index = 0;
     return dict;
 }
 
