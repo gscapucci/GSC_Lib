@@ -9,7 +9,9 @@ typedef struct DictionaryNode DictionaryNode;
 struct DictionaryNode
 {
     void *key;
+    size_t size_of_key;
     void *value;
+    size_t size_of_value;
 };
 
 DictionaryNode *create_dictionary_node(void *key, size_t key_size, void *value, size_t value_size);

@@ -8,12 +8,7 @@ typedef struct FunctionPointers
 
 FP fp;
 
-struct AVLTree_node
-{
-    Node *node_data;
-    int height_diff;
-    AVLTree_node *left, *right;
-};
+
 
 AVLTree_node *_create_avltree_node(void *data, size_t size);
 void _clear_avltree_node(AVLTree_node *root);
@@ -24,7 +19,7 @@ void *_get_avltree_node(AVLTree *self, void *data);
 void _print_tree_node(AVLTree_node *root, int height);
 void _print_tree(AVLTree *self);
 void *_get_at(AVLTree *self, size_t index);
-void *_get_at_node(AVLTree_node *root, size_t cur, size_t index);
+void *_get_at_node(AVLTree_node *root, size_t *cur, size_t index);
 
 AVLTree_node *_create_avltree_node(void *data, size_t size)
 {
@@ -169,23 +164,38 @@ void *_get_at(AVLTree *self, size_t index)
             fprintf(stderr, "index out of range");
             exit(1);
         }
-        return _get_at_node(self->root, 0, index);
+        size_t cur = 0;
+        return _get_at_node(self->root, &cur, index);
     }
     fprintf (stderr, "invalid input");
     exit(1);
 }
 
-void *_get_at_node(AVLTree_node *root, size_t cur, size_t index)
+void *_get_at_node(AVLTree_node *root, size_t *cur, size_t index)
 {
     if(root)
     {
         if(root->left)
         {
-            
+            void *ret = _get_at_node(root->left, cur, index);
+            (*cur)++;
+            if(ret)
+            {
+                return ret;
+            }
+        }
+        if((*cur) == index)
+        {
+            return root->node_data->data; 
         }
         if(root->right)
         {
-
+            (*cur)++;
+            void *ret = _get_at_node(root->right, cur, index);
+            if(ret)
+            {
+                return ret;
+            }
         }
     }
     return NULL;
@@ -202,6 +212,7 @@ AVLTree create_avltree(int (*compare_function)(void *data1, void *data2))
     fp.compare = compare_function;
     tree.get = _get_avltree_node;
     tree.insert = _insert_avltree;
+    tree.number_of_nodes = 0;
     tree.get_at = _get_at;
     tree.root = NULL;
     return tree;

@@ -8,6 +8,13 @@ typedef struct AVLTree AVLTree;
 typedef struct AVLTree_node AVLTree_node;
 //TODO: implement rotations, this tree is a simple binary tree
 
+struct AVLTree_node
+{
+    Node *node_data;
+    int height_diff;
+    AVLTree_node *left, *right;
+};
+
 struct AVLTree
 {
     AVLTree_node *root;

@@ -5,10 +5,14 @@ DictionaryNode *create_dictionary_node(void *key, size_t key_size, void *value, 
     DictionaryNode *node = (DictionaryNode *)malloc(sizeof(DictionaryNode));
     if(node)
     {
+        node->size_of_key = key_size;
         node->key = malloc(key_size);
         memcpy(node->key, key, key_size);
+
+        node->size_of_value = value_size;
         node->value = malloc(value_size);
         memcpy(node->value, value, value_size);
+        
         return node;
     }
     return NULL;

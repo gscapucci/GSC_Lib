@@ -14,7 +14,7 @@ void *get_at(Dictionary *self, size_t index);
 
 int _compare(void *data1, void *data2)
 {
-    return comapre_node(data1, (*(DictionaryNode *)data2).key);
+    return comapre_node((*(DictionaryNode *)data1).key, (*(DictionaryNode *)data2).key);
 }
 
 void insert_dict(Dictionary *self, void *key, size_t key_size, void *value, size_t value_size)
@@ -23,8 +23,8 @@ void insert_dict(Dictionary *self, void *key, size_t key_size, void *value, size
     {
         DictionaryNode *node = create_dictionary_node(key, key_size, value, value_size);
         self->_tree.insert(&self->_tree, node, sizeof(DictionaryNode) + key_size + value_size);
-        clear_dictionary_node(node);
-        free(node);
+        // clear_dictionary_node(node);
+        // free(node);
     }
 }
 
@@ -88,6 +88,7 @@ DictionaryNode *take_next(Dictionary *self)
         if(self->ite.pos == DICT_BEG)
         {
             self->ite.index = 0;
+            self->ite.pos = DICT_CUR;
         }
         void *data = self->get_at(self, self->ite.index);
         self->ite.index++;
