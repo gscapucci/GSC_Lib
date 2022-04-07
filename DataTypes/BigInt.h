@@ -61,4 +61,13 @@ BigInt construct_from_string(const char *number);
 
 void clear_bigint(BigInt *bigint);
 
+int abs_compare(BigInt *self, BigInt *number);
+int compare_bigint_to_bigint(BigInt *self, BigInt *number);
+int compare_bigint_to_int(BigInt *self, long long number);
+
+BigInt sumBigint(BigInt *self, BigInt *number); //this function creates a new BigInt, remember to use clear_bigint function
+BigInt sumInt(BigInt *self, long long number); //this function creates a new BigInt, remember to use clear_bigint function
+BigInt subBigint(BigInt *self, BigInt *number); //this function creates a new BigInt, remember to use clear_bigint function
+BigInt subInt(BigInt *self, long long number); //this function creates a new BigInt, remember to use clear_bigint function
+
 #endif /* BIG_INT_H */

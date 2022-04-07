@@ -41,7 +41,7 @@ FileManager.o: FileManagment/FileManager.c FileManagment/FileManager.h
 	$(CC) $(CFLAGS) -c FileManagment/FileManager.c -o FileManager.o
 
 clean:
-	del gsc_lib.o
+	del gsc_lib.o Node.o Stack.o String.o LinkedList.o AVLTree.o DictionaryNode.o Dictionary.o BigInt.o FileManager.o
 	del *.exe
 
 lib:

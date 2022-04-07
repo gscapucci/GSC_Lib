@@ -1,16 +1,13 @@
-#include "BigInt.h"
+    #include "BigInt.h"
 
 //--functions-definitions--//
 void set_bigint_functions(BigInt *bigint);
 void long_long_to_uint8_t(uint8_t *num_array, long long number, size_t lengh);
 void str_to_uint8_t(uint8_t *num_array, const char *number, uint8_t start);
 
-int abs_compare(BigInt *self, BigInt *number);
 void print_bigint(BigInt *self);
 void assign_bigint(BigInt *self, BigInt *number);
 void assign_int(BigInt *self, long long number);
-int compare_bigint_to_bigint(BigInt *self, BigInt *number);
-int compare_bigint_to_int(BigInt *self, long long number);
 void sum_bigint(BigInt *self, BigInt *number);
 void sum_int(BigInt *self, long long number);
 void sub_bigint(BigInt *self, BigInt *number);
@@ -565,4 +562,53 @@ void clear_bigint(BigInt *bigint)
             bigint->positive = true;
         }
     }
+}
+
+BigInt sumBigint(BigInt *self, BigInt *number)
+{
+    if(self && number)
+    {
+        BigInt new_bigint = construct_from_bigint(self);
+        new_bigint.Sum_bigint(&new_bigint, number);
+        return new_bigint;
+    }
+    fprintf(stderr, "invalid input");
+    exit(1);
+}
+
+
+BigInt sumInt(BigInt *self, long long number)
+{
+    if(self && number)
+    {
+        BigInt new_bigint = construct_from_bigint(self);
+        new_bigint.Sum_int(&new_bigint, number);
+        return new_bigint;
+    }
+    fprintf(stderr, "invalid input");
+    exit(1);
+}
+
+BigInt subBigint(BigInt *self, BigInt *number)
+{
+    if(self && number)
+    {
+        BigInt new_bigint = construct_from_bigint(self);
+        new_bigint.Sub_bigint(&new_bigint, number);
+        return new_bigint;
+    }
+    fprintf(stderr, "invalid input");
+    exit(1);
+}
+
+BigInt subInt(BigInt *self, long long number)
+{
+    if(self && number)
+    {
+        BigInt new_bigint = construct_from_bigint(self);
+        new_bigint.Sub_int(&new_bigint, number);
+        return new_bigint;
+    }
+    fprintf(stderr, "invalid input");
+    exit(1);
 }
