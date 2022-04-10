@@ -17,6 +17,7 @@ int main(int argc, char **argv)
         size_t num = *(size_t *)stack.pop(&stack);
         printf("%lld\n", num);
     }
+    clear_stack(&stack);
     return 0;
 }
 ```
