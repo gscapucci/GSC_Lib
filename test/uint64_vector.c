@@ -17,8 +17,7 @@ void set_uint64_vec_functions(Uint64_vec *vec)
         vec->Get_at = uint64_get_at;
         return;
     }
-    fprintf(stderr, "invalid input function set_uint64_vec_functions");
-    exit(1);
+    ERROR("invalid input");
 }
 
 void uint64_vec_push(Uint64_vec *self, uint64_t number)
@@ -31,10 +30,10 @@ void uint64_vec_push(Uint64_vec *self, uint64_t number)
             self->vector = (uint64_t *)realloc(self->vector, self->capacity);
         }
         self->vector[self->size] = number;
+        self->size++;
         return;
     }
-    fprintf(stderr, "invalid input function uint64_vec_push");
-    exit(1);
+    ERROR("invalid input");
 }
 
 void uint64_vec_pop(Uint64_vec *self)
@@ -43,8 +42,7 @@ void uint64_vec_pop(Uint64_vec *self)
     {
         if(self->size == 0)
         {
-            fprintf(stderr, "vector is empty");
-            exit(1);
+            ERROR("vector is empty");
         }
         self->vector[self->size--];
         if((self->size <= self->capacity / 2) && (self->capacity > self->base_capacity))
@@ -53,8 +51,7 @@ void uint64_vec_pop(Uint64_vec *self)
             self->vector = (uint64_t *)realloc(self->vector, self->capacity);
         }
     }
-    fprintf(stderr, "invalid input function uint64_vec_pop");
-    exit(1);
+    ERROR("invalid input");
 }
 
 uint64_t uint64_get_at(Uint64_vec *self, uint64_t index)
@@ -68,8 +65,7 @@ uint64_t uint64_get_at(Uint64_vec *self, uint64_t index)
         }
         return self->vector[index];
     }
-    fprintf(stderr, "invalif input function uint64_get_at");
-    exit(1);
+    ERROR("invalid input");
 }
 
 Uint64_vec create_uint64_vec(size_t start_capacity)
@@ -93,6 +89,5 @@ void clear_uint64_vec(Uint64_vec *vec)
         vec->capacity = vec->base_capacity;
         return;
     }
-    fprintf(stderr, "invalid input");
-    exit(1);
+    ERROR("invalid input");
 }

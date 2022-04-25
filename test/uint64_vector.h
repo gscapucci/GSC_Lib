@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "../macros.h"
 
 typedef struct Uint64_vec Uint64_vec;
 

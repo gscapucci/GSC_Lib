@@ -4,13 +4,13 @@
 #include "uint64_vector.h"
 #include <math.h>
 #include <string.h>
+#include <stdbool.h>
 
 typedef struct BigInt BigInt;
 
 struct BigInt
 {
     Uint64_vec number;
-    size_t last_used_index;
     void (*Print)(BigInt *self);
 };
 
