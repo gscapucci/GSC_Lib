@@ -1,7 +1,7 @@
-#ifndef DATA_STRUCTURES_H
-#define DATA_STRUCTURES_H
+#ifndef DATASTRUCTURES_H
+#define DATASTRUCTURES_H
 
-#include "AVLTree.h"
-#include "Stack.h" //include LinkedList
+#include "HashMap.h"
+#include "Vector.h"
 
-#endif /* DATA_STRUCTURES_H */
+#endif /* DATASTRUCTURES_H */

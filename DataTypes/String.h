@@ -1,33 +1,26 @@
 #ifndef STRING_H
 #define STRING_H
 
+#include "../global_allocator.h"
+
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 typedef struct String String;
 
-struct String
-{
-    char *_str;
-    size_t (*lengh)(String *self);
-    void (*set)(String *self, String *str);
-    void (*set_at)(String *self, size_t index, char value);
-    void (*set_cstr)(String *self, char *cstr);
-    char *(*get)(String *self);
-    char (*get_at)(String *self, size_t index);
-    char *(*concat_cstr)(String *self, char *cstr);
-    char *(*concat)(String *self, String *str);
-    void (*print)(String *self);
-    void (*clear)(String *self);
-    size_t (*sizeof_string)(String *self);
-    void (*reverse)(String *self);
+struct String {
+    char *str;
+    size_t len;
 };
 
 
 
 String create_string();
-String construct_string(char *str);
-void clear_string(String *str);
+String construct_string_by_copy(const char *str);
+String construct_string_by_move(char *str);
+void delete_string(String *str);
+void string_reverse(String *str);
+const char *string_as_cstr(String *str);
 
 #endif /* STRING_H */
