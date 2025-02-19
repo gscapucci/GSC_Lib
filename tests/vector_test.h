@@ -2,6 +2,7 @@
 #define VECTOR_TEST_H
 
 #include <assert.h>
+#include <stdio.h>
 #include "../GSC_Lib.h"
 
 void test_create_vector() {
@@ -82,12 +83,12 @@ void test_vector_pop_copy() {
     int *popped_data = (int *)vector_pop_copy(&vec);
     assert(*popped_data == 200);
     assert(vec.size == 1);
-    dealloc(popped_data);
+    deallocate(popped_data);
 
     popped_data = (int *)vector_pop_copy(&vec);
     assert(*popped_data == 100);
     assert(vec.size == 0);
-    dealloc(popped_data);
+    deallocate(popped_data);
 
     popped_data = (int *)vector_pop_copy(&vec); // Pop em um vetor vazio
     assert(popped_data == NULL);
@@ -128,6 +129,102 @@ void test_delete_vector() {
     printf("test_delete_vector passed!\n");
 }
 
+void test_vector_iter_begin() {
+    Vector vec = create_vector(5, sizeof(int));
+    int data1 = 10;
+    int data2 = 20;
+
+    vector_push(&vec, &data1);
+    vector_push(&vec, &data2);
+
+    VectorIter iter = vector_iter_begin(&vec);
+    assert(iter.vec == &vec);
+    assert(iter.current_index == 0);
+
+    delete_vector(&vec);
+    printf("test_vector_iter_begin passed!\n");
+}
+
+void test_vector_iter_end() {
+    Vector vec = create_vector(5, sizeof(int));
+    int data1 = 10;
+
+    vector_push(&vec, &data1);
+
+    VectorIter iter = vector_iter_begin(&vec);
+    assert(!vector_iter_end(&iter)); // Não está no fim
+
+    vector_iter_next(&iter);
+    assert(vector_iter_end(&iter)); // Agora está no fim
+
+    delete_vector(&vec);
+    printf("test_vector_iter_end passed!\n");
+}
+
+void test_vector_iter_next() {
+    Vector vec = create_vector(5, sizeof(int));
+    int data1 = 10;
+    int data2 = 20;
+
+    vector_push(&vec, &data1);
+    vector_push(&vec, &data2);
+
+    VectorIter iter = vector_iter_begin(&vec);
+    assert(iter.current_index == 0);
+
+    vector_iter_next(&iter);
+    assert(iter.current_index == 1);
+
+    vector_iter_next(&iter);
+    assert(iter.current_index == 2); // Chegou ao fim
+
+    delete_vector(&vec);
+    printf("test_vector_iter_next passed!\n");
+}
+
+void test_vector_iter_current() {
+    Vector vec = create_vector(5, sizeof(int));
+    int data1 = 10;
+    int data2 = 20;
+
+    vector_push(&vec, &data1);
+    vector_push(&vec, &data2);
+
+    VectorIter iter = vector_iter_begin(&vec);
+    assert(*(int *)vector_iter_current(&iter) == 10);
+
+    vector_iter_next(&iter);
+    assert(*(int *)vector_iter_current(&iter) == 20);
+
+    vector_iter_next(&iter);
+    assert(vector_iter_current(&iter) == NULL); // Fim do vetor
+
+    delete_vector(&vec);
+    printf("test_vector_iter_current passed!\n");
+}
+
+void test_vector_iteration() {
+    Vector vec = create_vector(5, sizeof(int));
+    int values[] = {10, 20, 30, 40, 50};
+
+    for (size_t i = 0; i < 5; i++) {
+        vector_push(&vec, &values[i]);
+    }
+
+    VectorIter iter = vector_iter_begin(&vec);
+    size_t index = 0;
+    while (!vector_iter_end(&iter)) {
+        int *current_value = (int *)vector_iter_current(&iter);
+        assert(*current_value == values[index]);
+        vector_iter_next(&iter);
+        index++;
+    }
+
+    assert(index == 5); // Verifica se todos os elementos foram percorridos
+
+    delete_vector(&vec);
+    printf("test_vector_iteration passed!\n");
+}
 
 void vector_test() {
     test_create_vector();
@@ -137,6 +234,13 @@ void vector_test() {
     test_vector_pop_copy();
     test_clear();
     test_delete_vector();
+
+    // Testes do iterador
+    test_vector_iter_begin();
+    test_vector_iter_end();
+    test_vector_iter_next();
+    test_vector_iter_current();
+    test_vector_iteration();
 }
 
 #endif /* VECTOR_TEST_H */

@@ -10,8 +10,7 @@
 typedef struct HashMap HashMap;
 typedef struct HashNode HashNode;
 
-#define INIT_CAP 16
-#define LOAD_FACTOR 0.75
+#define LOAD_FACTOR 0.7
 
 struct HashNode {
     void *key;

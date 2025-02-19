@@ -1,4 +1,5 @@
 #include "global_allocator.h"
 
-void *(*alloc)(size_t) = malloc;
-void (*dealloc)(void*) = free;
+void *(*allocate)(size_t) = malloc;
+void (*deallocate)(void*) = free;
+void *(*reallocate)(void*, size_t) = realloc;

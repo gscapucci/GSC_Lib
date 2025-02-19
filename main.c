@@ -28,18 +28,18 @@ void check_mem() {
 
 
 void destruct_string_defer(void *data) {
-    printf("Destruiu %s\n", ((String *)data)->str);
+    printf("Destruiu %s\n", ((String *)data)->data);
     destruct_string((String*)data);
 }
 
 void *copy_str(void *str) {
-    char *ret = alloc(strlen((char*)str) + 1);
+    char *ret = allocate(strlen((char*)str) + 1);
     memcpy(ret, str, strlen((char*)str) + 1);
     return ret;
 }
 
 void *copy_int(void *num) {
-    int64_t *n = alloc(sizeof(int64_t));
+    int64_t *n = allocate(sizeof(int64_t));
     *n = *(int64_t*)num;
     return n;
 }

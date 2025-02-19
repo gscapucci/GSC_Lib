@@ -3,5 +3,6 @@
 
 #include "HashMap.h"
 #include "Vector.h"
+#include "Stack.h"
 
 #endif /* DATASTRUCTURES_H */

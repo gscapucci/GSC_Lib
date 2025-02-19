@@ -1,0 +1,28 @@
+# Compilados e binários
+*.o
+*.out
+*.exe
+*.dll
+*.so
+*.a
+*.lib
+*.obj
+
+
+# Arquivos de log e depuração
+*.log
+*.tmp
+*.swp
+
+# Configurações do editor/IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# Dependências geradas
+node_modules/
+*.dSYM/
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db

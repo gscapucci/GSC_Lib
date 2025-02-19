@@ -3,16 +3,18 @@
 
 #include "../GSC_Lib.h"
 
+#define INIT_CAP 16
+
 // Funções auxiliares para copiar chaves e valores
 void *copy_string(void *key) {
     char *str = (char *)key;
-    char *copy = alloc(strlen(str) + 1);
+    char *copy = allocate(strlen(str) + 1);
     strcpy(copy, str);
     return copy;
 }
 
 void *copy_int(void *value) {
-    int *copy = alloc(sizeof(int));
+    int *copy = allocate(sizeof(int));
     *copy = *(int *)value;
     return copy;
 }
