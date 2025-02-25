@@ -81,6 +81,7 @@ int32_t cmp_bool(void *x, void *y) {
 
 HashNode *new_hash_node(void *key, void *value, bool should_dealloc) {
     HashNode *hn = allocate(sizeof(HashNode));
+    hn->next = NULL;
     hn->key = key;
     hn->value = value;
     hn->should_dealloc = should_dealloc;

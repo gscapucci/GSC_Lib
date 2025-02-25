@@ -6,6 +6,42 @@
 #include <string.h>
 #include <stdbool.h>
 
+#ifdef _WIN32
+    #define OS_WINDOWS
+#elif defined(__APPLE__)
+    #define OS_MACOS
+#elif defined(__linux__)
+    #define OS_LINUX
+#else
+    #define OS_UNKNOWN
+#endif
+
+const char *get_os() {
+    #ifdef _WIN64
+        return "Windows (64-bit)";
+    #elif _WIN32
+        return "Windows (32-bit)";
+    #elif __APPLE__ || __MACH__
+        return "macOS";
+    #elif __linux__
+        return "Linux";
+    #elif __FreeBSD__
+        return "FreeBSD";
+    #elif __unix || __unix__
+        return "Unix";
+    #else
+        return "Sistema Operacional Desconhecido";
+    #endif
+}
+
+#define BUILDSYS_ADD_LINKS(bs, ...) \
+    do { \
+        const char *sources[] = {__VA_ARGS__}; \
+        for (size_t i = 0; i < sizeof(sources) / sizeof(sources[0]); i++) { \
+            buildsys_add_link(bs, sources[i]); \
+        } \
+    } while (0)
+
 #define BUILDSYS_ADD_SOURCES(bs, ...) \
     do { \
         const char *sources[] = {__VA_ARGS__}; \
@@ -15,14 +51,12 @@
     } while (0)
 
 #define BUILDSYS_ADD_FLAGS(bs, ...) \
-do { \
-    const char *sources[] = {__VA_ARGS__}; \
-    for (size_t i = 0; i < sizeof(sources) / sizeof(sources[0]); i++) { \
-        buildsys_add_flag(bs, sources[i]); \
-    } \
-} while (0)
-
-#define ARGS(...) __VA_ARGS__
+    do { \
+        const char *flags[] = {__VA_ARGS__}; \
+        for (size_t i = 0; i < sizeof(flags) / sizeof(flags[0]); i++) { \
+            buildsys_add_flag(bs, flags[i]); \
+        } \
+    } while (0)
 
 typedef struct {
     char compiler[100];
@@ -30,6 +64,8 @@ typedef struct {
     int source_count;
     char **flags;
     int flag_count;
+    char **links;
+    int link_count;
     char *output_name;
     bool library;
 } BuildSystem;
@@ -38,24 +74,59 @@ static const char *COMPILERS[] = {
     NULL,
     "gcc",
     "clang",
-    "msvc",
+    "cl",
 };
 
 typedef enum {
-    UNKNOWN = 0,
-    GCC = 1,
-    CLANG = 2,
-    MSVC = 3,
-} DefaultCompiler;
+    COMPILER_UNKNOWN = 0,
+    COMPILER_GCC,
+    COMPILER_CLANG,
+    COMPILER_MSVC,
+} CompilerType;
 
-static BuildSystem *buildsys_create(const char *output_name, DefaultCompiler compiler, bool library) {
-    BuildSystem *bs = (BuildSystem *)malloc(sizeof(BuildSystem));
-    if(COMPILERS[(int)compiler] != NULL) {
-        strcpy(bs->compiler, COMPILERS[(int)compiler]);
+static CompilerType detect_compiler() {
+    const char *cc = getenv("CC"); // Verifica se o usuário definiu um compilador
+
+    if (cc != NULL) {
+        if (strstr(cc, "gcc") != NULL) {
+            return COMPILER_GCC;
+        } else if (strstr(cc, "clang") != NULL) {
+            return COMPILER_CLANG;
+        } else if (strstr(cc, "cl") != NULL) { // MSVC usa "cl.exe"
+            return COMPILER_MSVC;
+        }
     }
+
+    // Se a variável CC não estiver definida, tente detectar o compilador manualmente
+    #if defined(__GNUC__) && !defined(__clang__)
+        return COMPILER_GCC;
+    #elif defined(__clang__)
+        return COMPILER_CLANG;
+    #elif defined(_MSC_VER)
+        return COMPILER_MSVC;
+    #else
+        return COMPILER_UNKNOWN;
+    #endif
+}
+
+static BuildSystem *buildsys_create(const char *output_name, CompilerType compiler, bool library) {
+    BuildSystem *bs = (BuildSystem *)malloc(sizeof(BuildSystem));
+    if (!bs) {
+        perror("Erro ao alocar memória para BuildSystem");
+        exit(EXIT_FAILURE);
+    }
+
+    if (COMPILERS[(int)compiler] != NULL) {
+        strcpy(bs->compiler, COMPILERS[(int)compiler]);
+    } else {
+        strcpy(bs->compiler, "gcc"); // Fallback para GCC
+    }
+
     bs->output_name = strdup(output_name);
     bs->sources = NULL;
     bs->flags = NULL;
+    bs->links = NULL;
+    bs->link_count = 0;
     bs->source_count = 0;
     bs->flag_count = 0;
     bs->library = library;
@@ -63,89 +134,191 @@ static BuildSystem *buildsys_create(const char *output_name, DefaultCompiler com
 }
 
 
+
 static void buildsys_destroy(BuildSystem *bs) {
+    if (!bs) return;
+
     free(bs->output_name);
     for (int i = 0; i < bs->source_count; i++) {
         free(bs->sources[i]);
     }
     free(bs->sources);
-    
+
     for (int i = 0; i < bs->flag_count; i++) {
         free(bs->flags[i]);
     }
     free(bs->flags);
-    
+
     free(bs);
 }
 
-static void set_unknown_compiler(BuildSystem *bs, const char *compiler) {
-    strcpy(bs->compiler, compiler);
+static const char *get_compiler_name(CompilerType compiler) {
+    switch (compiler) {
+        case COMPILER_GCC: return "gcc";
+        case COMPILER_CLANG: return "clang";
+        case COMPILER_MSVC: return "cl";
+        default: return "gcc"; // Fallback para GCC
+    }
+}
+
+static const char *get_object_extension() {
+    #ifdef OS_WINDOWS
+        return ".obj";
+    #else
+        return ".o";
+    #endif
+}
+
+static const char *get_executable_extension() {
+    #ifdef OS_WINDOWS
+        return ".exe";
+    #else
+        return "";
+    #endif
+}
+
+static const char *get_clean_command() {
+    #ifdef OS_WINDOWS
+        return "del";
+    #else
+        return "rm";
+    #endif
 }
 
 static void buildsys_add_source(BuildSystem *bs, const char *source) {
     bs->source_count++;
     bs->sources = (char **)realloc(bs->sources, bs->source_count * sizeof(char *));
+    if (!bs->sources) {
+        perror("Erro ao realocar memória para sources");
+        exit(EXIT_FAILURE);
+    }
     bs->sources[bs->source_count - 1] = strdup(source);
 }
 
 static void buildsys_add_flag(BuildSystem *bs, const char *flag) {
     bs->flag_count++;
     bs->flags = (char **)realloc(bs->flags, bs->flag_count * sizeof(char *));
+    if (!bs->flags) {
+        perror("Erro ao realocar memória para flags");
+        exit(EXIT_FAILURE);
+    }
     bs->flags[bs->flag_count - 1] = strdup(flag);
 }
 
-static void buildsys_compile(BuildSystem *bs) {
-    char flags[256] = {0};
-    for(int i = 0; i < bs->flag_count; i++) {
+static void buildsys_add_link(BuildSystem *bs, const char *flag) {
+    bs->link_count++;
+    bs->links = (char **)realloc(bs->links, bs->link_count * sizeof(char *));
+    if (!bs->links) {
+        perror("Erro ao realocar memória para flags");
+        exit(EXIT_FAILURE);
+    }
+    bs->links[bs->link_count - 1] = strdup(flag);
+}
+
+
+static void buildsys_compile(BuildSystem *bs, CompilerType compiler) {
+    char flags[1024] = {0};
+    for (int i = 0; i < bs->flag_count; i++) {
         strcat(flags, bs->flags[i]);
         strcat(flags, " ");
     }
+
+    const char *object_ext = get_object_extension();
+
     for (int i = 0; i < bs->source_count; i++) {
-        char command[1024];
-        snprintf(command, sizeof(command), "%s %s -c %s -o %s.o", bs->compiler, flags, bs->sources[i], bs->sources[i]);
+        char command[2048];
+        char source_path[256];
+        strcpy(source_path, bs->sources[i]);
+
+        // Substitui barras por barras invertidas no Windows
+        #ifdef OS_WINDOWS
+            for (char *p = source_path; *p; p++) {
+                if (*p == '/') *p = '\\';
+            }
+        #endif
+
+        snprintf(command, sizeof(command), "%s %s -c %s -o %s%s", 
+                  get_compiler_name(compiler), flags, source_path, source_path, object_ext);
         printf("Compilando: %s\n", command);
-        if(system(command) != 0) exit(1);
+        if (system(command) != 0) {
+            fprintf(stderr, "Erro ao compilar %s\n", source_path);
+            exit(EXIT_FAILURE);
+        }
     }
 }
 
-static void buildsys_link_lib(BuildSystem *bs) {
-    char command[512] = {0};
-    snprintf(command, sizeof(command), "ld -r -o %s.o", bs->output_name);
 
-    for (int i = 0; i < bs->source_count; i++) {
-        strcat(command, " ");
-        strcat(command, bs->sources[i]);
-        strcat(command, ".o");
+static void buildsys_link(BuildSystem *bs, CompilerType compiler) {
+    char command[2048] = {0};
+    const char *object_ext = get_object_extension();
+    const char *executable_ext = get_executable_extension();
+
+    if (compiler == COMPILER_MSVC) {
+        // Comando do MSVC
+        if (bs->library) {
+            snprintf(command, sizeof(command), "link /OUT:%s.lib", bs->output_name);
+        } else {
+            snprintf(command, sizeof(command), "link /OUT:%s%s", bs->output_name, executable_ext);
+        }
+
+        for (int i = 0; i < bs->source_count; i++) {
+            strcat(command, " ");
+            strcat(command, bs->sources[i]);
+            strcat(command, object_ext);
+        }
+    } else {
+        // Comando do GCC/Clang
+        if (bs->library) {
+            snprintf(command, sizeof(command), "ar rcs lib%s.a", bs->output_name);
+            for (int i = 0; i < bs->source_count; i++) {
+                strcat(command, " ");
+                strcat(command, bs->sources[i]);
+                strcat(command, get_object_extension());
+            }
+        } else {
+            snprintf(command, sizeof(command), "%s -o %s%s", get_compiler_name(compiler), bs->output_name, executable_ext);
+            for (int i = 0; i < bs->source_count; i++) {
+                strcat(command, " ");
+                strcat(command, bs->sources[i]);
+                strcat(command, get_object_extension());
+            }
+            for (int i = 0; i < bs->link_count; i++) {
+                strcat(command, " ");
+                strcat(command, bs->links[i]);  // Aqui os links só são adicionados se for um executável
+            }
+        }
     }
+
+
     printf("Linkando: %s\n", command);
-    if(system(command) != 0) exit(1);
-}
-
-static void buildsys_link(BuildSystem *bs) {
-    if(bs->library) {
-        buildsys_link_lib(bs);
-        return;
+    if (system(command) != 0) {
+        fprintf(stderr, "Erro ao linkar\n");
+        exit(EXIT_FAILURE);
     }
-    char command[512] = {0};
-    snprintf(command, sizeof(command), "%s -o %s", bs->compiler, bs->output_name);
-
-    for (int i = 0; i < bs->source_count; i++) {
-        strcat(command, " ");
-        strcat(command, bs->sources[i]);
-        strcat(command, ".o");
-    }
-    printf("Linkando: %s\n", command);
-    if(system(command) != 0) exit(1);
 }
-
 static void buildsys_clear(BuildSystem *bs) {
-    for(int i = 0; i < bs->source_count; i++) {
-        char command[256] = {0};
-        strcat(command, "rm ");
-        strcat(command, bs->sources[i]);
-        strcat(command, ".o");
+    const char *clean_command = get_clean_command();
+    const char *object_ext = get_object_extension();
+
+    for (int i = 0; i < bs->source_count; i++) {
+        char command[500];
+        char source_path[256];
+        strcpy(source_path, bs->sources[i]);
+
+        // Substitui barras por barras invertidas no Windows
+        #ifdef OS_WINDOWS
+            for (char *p = source_path; *p; p++) {
+                if (*p == '/') *p = '\\';
+            }
+        #endif
+
+        snprintf(command, sizeof(command), "%s %s%s", clean_command, source_path, object_ext);
         printf("Deletando: %s\n", command);
-        if(system(command) != 0) exit(1);
+        if (system(command) != 0) {
+            fprintf(stderr, "Erro ao deletar %s%s\n", source_path, object_ext);
+        }
     }
 }
+
+
 #endif /* BUILD_H */

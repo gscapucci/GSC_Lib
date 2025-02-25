@@ -1,3 +1,6 @@
+*
+!*.*
+
 # Compilados e binários
 *.o
 *.out
@@ -19,10 +22,6 @@
 .idea/
 *.code-workspace
 
-# Dependências geradas
-node_modules/
-*.dSYM/
 
-# Arquivos do sistema
-.DS_Store
-Thumbs.db
+
+TODO

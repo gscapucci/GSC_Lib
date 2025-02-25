@@ -13,6 +13,10 @@ String string_create() {
     String string = {0};
     string.capacity = MIM_CAP;
     string.data = allocate(MIM_CAP);
+    if(!string.data) {
+        fprintf(stderr, "In funciton '%s' allocation fail.\n", __func__);
+        exit(1);
+    }
     string.length = 0;
     return string;
 }
@@ -21,6 +25,10 @@ String string_construct_by_copy(const char *cstr) {
     string.length = strlen(cstr);
     string.capacity = string.length * 1.5;
     string.data = allocate(string.capacity);
+    if(!string.data) {
+        fprintf(stderr, "In funciton '%s' allocation fail.\n", __func__);
+        exit(1);
+    }
     memcpy(string.data, cstr, string.length + 1);
     return string;
 }
@@ -30,6 +38,10 @@ String string_construct_by_move(char *cstr) {
     string.data = cstr;
     string.capacity = string.length * 1.5;
     string.data = reallocate(string.data, string.capacity);
+    if(!string.data) {
+        fprintf(stderr, "In funciton '%s' allocation fail.\n", __func__);
+        exit(1);
+    }
     return string;
 }
 
@@ -39,27 +51,47 @@ String string_copy(const String *str) {
     string.capacity = str->capacity;
     string.length = str->length;
     string.data = allocate(str->capacity);
+    if(!string.data) {
+        fprintf(stderr, "In funciton '%s' allocation fail.\n", __func__);
+        exit(1);
+    }
     memcpy(string.data, str->data, str->length + 1);
     return string;
 }
 
 String *string_create_heap() {
     String *new = allocate(sizeof(String));
+    if(!new) {
+        fprintf(stderr, "In funciton '%s' allocation fail.\n", __func__);
+        exit(1);
+    }
     *new = string_create();
     return new;
 }
 String *string_construct_by_copy_heap(const char *str) {
     String *new = allocate(sizeof(String));
+    if(!new) {
+        fprintf(stderr, "In funciton '%s' allocation fail.\n", __func__);
+        exit(1);
+    }
     *new = string_construct_by_copy(str);
     return new;
 }
 String *string_construct_by_move_heap(char *str) {
     String *new = allocate(sizeof(String));
+    if(!new) {
+        fprintf(stderr, "In funciton '%s' allocation fail.\n", __func__);
+        exit(1);
+    }
     *new = string_construct_by_move(str);
     return new;
 }
 String *string_copy_heap(const String *str) {
     String *new = allocate(sizeof(String));
+    if(!new) {
+        fprintf(stderr, "In funciton '%s' allocation fail.\n", __func__);
+        exit(1);
+    }
     *new = string_copy(str);
     return new;
 }

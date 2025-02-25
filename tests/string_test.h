@@ -31,7 +31,7 @@ void test_string_construct_by_copy() {
     assert(strcmp(str.data, cstr) == 0);
     string_delete(&str);
     printf("test_string_construct_by_copy passed!\n");
-}
+} 
 
 void test_string_construct_by_copy_heap() {
     const char *cstr = "Hello";

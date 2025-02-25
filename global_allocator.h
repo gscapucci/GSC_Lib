@@ -22,6 +22,10 @@ static inline void set_default_reallocate(void *(*reallocator)(void*, size_t)) {
     reallocate = reallocator;
 }
 
+#define SET_LOCAL_ALLOCATOR(alloator) void *(*local_allocate)(size_t) = alloator;
+#define SET_LOCAL_DEALOCATOR(deallocator) void *(*local_deallocate)(void*) = deallocator;
+#define SET_LOCAL_REALLOCATOR(reallocator) void *(*local_reallocate)(void*, size_t) = reallocator;
+
 #ifdef __cpluplus
 }
 #endif

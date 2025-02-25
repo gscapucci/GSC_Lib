@@ -6,7 +6,7 @@
 #include "../GSC_Lib.h"
 
 void test_create_vector() {
-    Vector vec = create_vector(10, sizeof(int));
+    Vector vec = create_vector(10, sizeof(int), NULL, NULL);
     assert(vec.size == 0);
     assert(vec.capacity == 10);
     assert(vec.data_size == sizeof(int));
@@ -15,7 +15,7 @@ void test_create_vector() {
 }
 
 void test_vector_push() {
-    Vector vec = create_vector(2, sizeof(int));
+    Vector vec = create_vector(2, sizeof(int), NULL, NULL);
     int data1 = 10;
     int data2 = 20;
     int data3 = 30;
@@ -35,7 +35,7 @@ void test_vector_push() {
 }
 
 void test_vector_at() {
-    Vector vec = create_vector(5, sizeof(int));
+    Vector vec = create_vector(5, sizeof(int), NULL, NULL);
     int data1 = 100;
     int data2 = 200;
 
@@ -51,7 +51,7 @@ void test_vector_at() {
 }
 
 void test_vector_pop() {
-    Vector vec = create_vector(5, sizeof(int));
+    Vector vec = create_vector(5, sizeof(int), NULL, NULL);
     int data1 = 100;
     int data2 = 200;
 
@@ -73,7 +73,7 @@ void test_vector_pop() {
 }
 
 void test_vector_pop_copy() {
-    Vector vec = create_vector(5, sizeof(int));
+    Vector vec = create_vector(5, sizeof(int), NULL, NULL);
     int data1 = 100;
     int data2 = 200;
 
@@ -98,7 +98,7 @@ void test_vector_pop_copy() {
 }
 
 void test_clear() {
-    Vector vec = create_vector(5, sizeof(int));
+    Vector vec = create_vector(5, sizeof(int), NULL, NULL);
     int data1 = 100;
     int data2 = 200;
 
@@ -114,7 +114,7 @@ void test_clear() {
 }
 
 void test_delete_vector() {
-    Vector vec = create_vector(5, sizeof(int));
+    Vector vec = create_vector(5, sizeof(int), NULL, NULL);
     int data1 = 100;
     int data2 = 200;
 
@@ -130,7 +130,7 @@ void test_delete_vector() {
 }
 
 void test_vector_iter_begin() {
-    Vector vec = create_vector(5, sizeof(int));
+    Vector vec = create_vector(5, sizeof(int), NULL, NULL);
     int data1 = 10;
     int data2 = 20;
 
@@ -146,7 +146,7 @@ void test_vector_iter_begin() {
 }
 
 void test_vector_iter_end() {
-    Vector vec = create_vector(5, sizeof(int));
+    Vector vec = create_vector(5, sizeof(int), NULL, NULL);
     int data1 = 10;
 
     vector_push(&vec, &data1);
@@ -162,7 +162,7 @@ void test_vector_iter_end() {
 }
 
 void test_vector_iter_next() {
-    Vector vec = create_vector(5, sizeof(int));
+    Vector vec = create_vector(5, sizeof(int), NULL, NULL);
     int data1 = 10;
     int data2 = 20;
 
@@ -183,7 +183,7 @@ void test_vector_iter_next() {
 }
 
 void test_vector_iter_current() {
-    Vector vec = create_vector(5, sizeof(int));
+    Vector vec = create_vector(5, sizeof(int), NULL, NULL);
     int data1 = 10;
     int data2 = 20;
 
@@ -204,7 +204,7 @@ void test_vector_iter_current() {
 }
 
 void test_vector_iteration() {
-    Vector vec = create_vector(5, sizeof(int));
+    Vector vec = create_vector(5, sizeof(int), NULL, NULL);
     int values[] = {10, 20, 30, 40, 50};
 
     for (size_t i = 0; i < 5; i++) {
