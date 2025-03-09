@@ -1,7 +1,7 @@
-*
-!*.*
+# *
+# !*.*
 
-# Compilados e binários
+# # Compilados e binários
 *.o
 *.out
 *.exe
@@ -12,16 +12,16 @@
 *.obj
 
 
-# Arquivos de log e depuração
+# # Arquivos de log e depuração
 *.log
 *.tmp
 *.swp
 
-# Configurações do editor/IDE
+# # Configurações do editor/IDE
 .vscode/
 .idea/
 *.code-workspace
 
 
-
+build
 TODO
