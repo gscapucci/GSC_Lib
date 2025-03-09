@@ -90,6 +90,9 @@ typedef uint16_t u16;
 typedef uint32_t u32;
 typedef uint64_t u64;
 
+typedef uintptr_t usize;
+typedef intptr_t isize;
+
 // Tipos de 128 bits
 #if defined(__SIZEOF_INT128__)// GCC/Clang suportam __int128
     #define HAS_I128
