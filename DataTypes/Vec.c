@@ -1,37 +1,80 @@
 #include "Vec.h"
+#include "stdbool.h"
+const usize vt_to_size[VT_COUNT] = {
+    [VT_UNDEFINED] = 0,
+#ifndef HAS_F32
+    [VT_F32] = sizeof(f32),
+#endif
+#ifndef HAS_F64
+    [VT_F64] = sizeof(f64),
+#endif
+#ifndef HAS_F128
+    [VT_F128] = sizeof(f128),
+#endif
+#ifndef HAS_I8
+    [VT_I8] = sizeof(i8),
+#endif
+#ifndef HAS_I16
+    [VT_I16] = sizeof(i16),
+#endif
+#ifndef HAS_I32
+    [VT_I32] = sizeof(i32),
+#endif
+#ifndef HAS_I64
+    [VT_I64] = sizeof(i64),
+#endif
+#ifndef HAS_I128
+    [VT_I128] = sizeof(i128),
+#endif
+#ifndef HAS_U8
+    [VT_U8] = sizeof(u8),
+#endif
+#ifndef HAS_U16
+    [VT_U16] = sizeof(u16),
+#endif
+#ifndef HAS_U32
+    [VT_U32] = sizeof(u32),
+#endif
+#ifndef HAS_U64
+    [VT_U64] = sizeof(u64),
+#endif
+#ifndef HAS_U128
+    [VT_U128] = sizeof(u128),
+#endif
+};
+
+#define VEC_OPERATION(op, res, v1, v2, type) \
+    type* r = (type*)res->data; \
+    type* a = (type*)v1->data; \
+    type* b = (type*)v2->data; \
+    for (usize i = 0; i < res->dim; i++) { \
+        r[i] = a[i] op b[i]; \
+    }
+
+#define VEC_SCALAR_OPERATION(op, res, v1, scalar, type) \
+    type* r = (type*)res->data; \
+    type* a = (type*)v1->data; \
+    type scale = *(type*)scalar; \
+    for (usize i = 0; i < res->dim; i++) { \
+        r[i] = a[i] op scale; \
+    }
+
+inline bool is_valid_vec_type(enum VecType type) {
+    return type >= 0 && type < VT_COUNT;
+}
+
 
 Vec vec_init(usize dimensions, enum VecType type) {
     Vec vec = {0};
     vec.dim = dimensions;
-    u64 data_size = 0;
-    switch(type) {
-        case VT_I8:
-        case VT_U8:
-            data_size = sizeof(i8);
-            break;
-        case VT_I16:
-        case VT_U16:
-            data_size = sizeof(i16);
-            break;
-        case VT_F32:
-        case VT_I32:
-        case VT_U32:
-            data_size = sizeof(i32);
-            break;
-        case VT_F64:
-        case VT_I64:
-        case VT_U64:
-            data_size = sizeof(i64);
-            break;
-        case VT_F128:
-        case VT_I128:
-        case VT_U128:
-            data_size = sizeof(i128);
-            break;
-        case VT_UNDEFINED:
-        default:
-        fprintf(stderr, "Undefined data type\n");
-            break;
+    if (!is_valid_vec_type(type)) {
+        fprintf(stderr, "Error: invalid vector type.\n");
+        exit(1);
+    }
+    u64 data_size = vt_to_size[type];
+    if(data_size == 0) {
+        fprintf(stderr, "Erro: Undefined vec type\n");
+        exit(1);
     }
     vec.data = allocate(vec.dim * data_size);
     vec.type = type;
@@ -49,82 +92,320 @@ void vec_delete(Vec *vec) {
 
 
 
-void vec_sum(Vec *res, Vec *v1, Vec* v2) {
+void vec_sum(Vec *res, const Vec *v1, const Vec* v2) {
     if(!res || !v1 || !v2) return;
     if (v1->dim != v2->dim || v1->dim != res->dim || v1->type != v2->type || v1->type != res->type) {
         fprintf(stderr, "Erro: Vetores com dimensões ou tipos incompatíveis.\n");
         return;
     }
-    #define SUM(type, res, v1, v2, index) \
-        type* r =  (type*)res->data;\
-        type* a = (type*)v1->data;\
-        type* b = (type*)v2->data;\
-        r[index] = a[index] + b[index];
-    for(usize i = 0; i < v1->dim; i++) {
-
-        switch (res->type) {
-            case VT_I8: {
-                SUM(i8, res, v1, v2, i);
-                break;
-            }
-            case VT_U8: {
-                SUM(u8, res, v1, v2, i);
-                break;
-            }
-            case VT_I16: {
-                SUM(i16, res, v1, v2, i);
-                break;
-            }
-            case VT_U16: {
-                SUM(u16, res, v1, v2, i);
-                break;
-            }
-            case VT_F32: {
-                SUM(f32, res, v1, v2, i);
-                break;
-            }
-            case VT_I32: {
-                SUM(i32, res, v1, v2, i);
-                break;
-            }
-            case VT_U32: {
-                SUM(u32, res, v1, v2, i);
-                break;
-            }
-            case VT_F64: {
-                SUM(f64, res, v1, v2, i);
-                break;
-            }
-            case VT_I64: {
-                SUM(i64, res, v1, v2, i);
-                break;
-            }
-            case VT_U64: {
-                SUM(u64, res, v1, v2, i);
-                break;
-            }
-            case VT_F128: {
-                SUM(f128, res, v1, v2, i);
-                break;
-            }
-            case VT_I128: {
-                SUM(i128, res, v1, v2, i);
-                break;
-            }
-            case VT_U128: {
-                SUM(u128, res, v1, v2, i);
-                break;
-            }
-            case VT_UNDEFINED:
-            default:
-                fprintf(stderr, "Erro: Tipo de dados não suportado.\n");
-                break;
-        }
+    switch (res->type) {
+#ifdef HAS_I8
+        case VT_I8:   VEC_OPERATION(+, res, v1, v2, i8); break;
+#endif
+#ifdef HAS_U8
+        case VT_U8:   VEC_OPERATION(+, res, v1, v2, u8); break;
+#endif
+#ifdef HAS_I16
+        case VT_I16:  VEC_OPERATION(+, res, v1, v2, i16); break;
+#endif
+#ifdef HAS_U16
+        case VT_U16:  VEC_OPERATION(+, res, v1, v2, u16); break;
+#endif
+#ifdef HAS_F32
+        case VT_F32:  VEC_OPERATION(+, res, v1, v2, f32); break;
+#endif
+#ifdef HAS_I32
+        case VT_I32:  VEC_OPERATION(+, res, v1, v2, i32); break;
+#endif
+#ifdef HAS_U32
+        case VT_U32:  VEC_OPERATION(+, res, v1, v2, u32); break;
+#endif
+#ifdef HAS_F64
+        case VT_F64:  VEC_OPERATION(+, res, v1, v2, f64); break;
+#endif
+#ifdef HAS_I64
+        case VT_I64:  VEC_OPERATION(+, res, v1, v2, i64); break;
+#endif
+#ifdef HAS_U64
+        case VT_U64:  VEC_OPERATION(+, res, v1, v2, u64); break;
+#endif
+#ifdef HAS_F128
+        case VT_F128: VEC_OPERATION(+, res, v1, v2, f128); break;
+#endif
+#ifdef HAS_I128
+        case VT_I128: VEC_OPERATION(+, res, v1, v2, i128); break;
+#endif
+#ifdef HAS_U128
+        case VT_U128: VEC_OPERATION(+, res, v1, v2, u128); break;
+#endif
+        default:
+            fprintf(stderr, "Erro: Tipo de dados não suportado.\n");
+            break;
     }
 }
-void vec_sub(Vec *res, Vec *v1, Vec* v2);
-void vec_mul_scalar(Vec *res, Vec *v1, void *scalar);
+void vec_sub(Vec *res, const Vec *v1, const Vec* v2) {
+    if(!res || !v1 || !v2) return;
+    if (v1->dim != v2->dim || v1->dim != res->dim || v1->type != v2->type || v1->type != res->type) {
+        fprintf(stderr, "Erro: Vetores com dimensões ou tipos incompatíveis.\n");
+        return;
+    }
+    switch (res->type) {
+#ifdef HAS_I8
+        case VT_I8:   VEC_OPERATION(+, res, v1, v2, i8); break;
+#endif
+#ifdef HAS_U8
+        case VT_U8:   VEC_OPERATION(+, res, v1, v2, u8); break;
+#endif
+#ifdef HAS_I16
+        case VT_I16:  VEC_OPERATION(+, res, v1, v2, i16); break;
+#endif
+#ifdef HAS_U16
+        case VT_U16:  VEC_OPERATION(+, res, v1, v2, u16); break;
+#endif
+#ifdef HAS_F32
+        case VT_F32:  VEC_OPERATION(+, res, v1, v2, f32); break;
+#endif
+#ifdef HAS_I32
+        case VT_I32:  VEC_OPERATION(+, res, v1, v2, i32); break;
+#endif
+#ifdef HAS_U32
+        case VT_U32:  VEC_OPERATION(+, res, v1, v2, u32); break;
+#endif
+#ifdef HAS_F64
+        case VT_F64:  VEC_OPERATION(+, res, v1, v2, f64); break;
+#endif
+#ifdef HAS_I64
+        case VT_I64:  VEC_OPERATION(+, res, v1, v2, i64); break;
+#endif
+#ifdef HAS_U64
+        case VT_U64:  VEC_OPERATION(+, res, v1, v2, u64); break;
+#endif
+#ifdef HAS_F128
+        case VT_F128: VEC_OPERATION(+, res, v1, v2, f128); break;
+#endif
+#ifdef HAS_I128
+        case VT_I128: VEC_OPERATION(+, res, v1, v2, i128); break;
+#endif
+#ifdef HAS_U128
+        case VT_U128: VEC_OPERATION(+, res, v1, v2, u128); break;
+#endif
+        default:
+            fprintf(stderr, "Erro: Tipo de dados não suportado.\n");
+            break;
+    }
+}
 
+
+void vec_mul_scalar(Vec *res, const Vec *v1, const void *scalar) {
+    if (!res || !v1 || !scalar) return;
+    if (v1->dim != res->dim || v1->type != res->type) {
+        fprintf(stderr, "Erro: Vetores com dimensões ou tipos incompatíveis.\n");
+        return;
+    }
+
+    switch (res->type) {
+#ifdef HAS_I8
+        case VT_I8:   VEC_SCALAR_OPERATION(*, res, v1, scalar, i8); break;
+#endif
+#ifdef HAS_U8
+        case VT_U8:   VEC_SCALAR_OPERATION(*, res, v1, scalar, u8); break;
+#endif
+#ifdef HAS_I16
+        case VT_I16:  VEC_SCALAR_OPERATION(*, res, v1, scalar, i16); break;
+#endif
+#ifdef HAS_U16
+        case VT_U16:  VEC_SCALAR_OPERATION(*, res, v1, scalar, u16); break;
+#endif
+#ifdef HAS_F32
+        case VT_F32:  VEC_SCALAR_OPERATION(*, res, v1, scalar, f32); break;
+#endif
+#ifdef HAS_I32
+        case VT_I32:  VEC_SCALAR_OPERATION(*, res, v1, scalar, i32); break;
+#endif
+#ifdef HAS_U32
+        case VT_U32:  VEC_SCALAR_OPERATION(*, res, v1, scalar, u32); break;
+#endif
+#ifdef HAS_F64
+        case VT_F64:  VEC_SCALAR_OPERATION(*, res, v1, scalar, f64); break;
+#endif
+#ifdef HAS_I64
+        case VT_I64:  VEC_SCALAR_OPERATION(*, res, v1, scalar, i64); break;
+#endif
+#ifdef HAS_U64
+        case VT_U64:  VEC_SCALAR_OPERATION(*, res, v1, scalar, u64); break;
+#endif
+#ifdef HAS_F128
+        case VT_F128: VEC_SCALAR_OPERATION(*, res, v1, scalar, f128); break;
+#endif
+#ifdef HAS_I128
+        case VT_I128: VEC_SCALAR_OPERATION(*, res, v1, scalar, i128); break;
+#endif
+#ifdef HAS_U128
+        case VT_U128: VEC_SCALAR_OPERATION(*, res, v1, scalar, u128); break;
+#endif
+        default:
+            fprintf(stderr, "Erro: Tipo de dados não suportado.\n");
+            break;
+    }
+}
+
+void vec_div_scalar(Vec *res, const Vec *v1, const void *scalar) {
+    if (!res || !v1 || !scalar) return;
+    if (v1->dim != res->dim || v1->type != res->type) {
+        fprintf(stderr, "Erro: Vetores com dimensões ou tipos incompatíveis.\n");
+        return;
+    }
+
+    switch (res->type) {
+#ifdef HAS_I8
+        case VT_I8:   VEC_SCALAR_OPERATION(/, res, v1, scalar, i8); break;
+#endif
+#ifdef HAS_U8
+        case VT_U8:   VEC_SCALAR_OPERATION(/, res, v1, scalar, u8); break;
+#endif
+#ifdef HAS_I16
+        case VT_I16:  VEC_SCALAR_OPERATION(/, res, v1, scalar, i16); break;
+#endif
+#ifdef HAS_U16
+        case VT_U16:  VEC_SCALAR_OPERATION(/, res, v1, scalar, u16); break;
+#endif
+#ifdef HAS_F32
+        case VT_F32:  VEC_SCALAR_OPERATION(/, res, v1, scalar, f32); break;
+#endif
+#ifdef HAS_I32
+        case VT_I32:  VEC_SCALAR_OPERATION(/, res, v1, scalar, i32); break;
+#endif
+#ifdef HAS_U32
+        case VT_U32:  VEC_SCALAR_OPERATION(/, res, v1, scalar, u32); break;
+#endif
+#ifdef HAS_F64
+        case VT_F64:  VEC_SCALAR_OPERATION(/, res, v1, scalar, f64); break;
+#endif
+#ifdef HAS_I64
+        case VT_I64:  VEC_SCALAR_OPERATION(/, res, v1, scalar, i64); break;
+#endif
+#ifdef HAS_U64
+        case VT_U64:  VEC_SCALAR_OPERATION(/, res, v1, scalar, u64); break;
+#endif
+#ifdef HAS_F128
+        case VT_F128: VEC_SCALAR_OPERATION(/, res, v1, scalar, f128); break;
+#endif
+#ifdef HAS_I128
+        case VT_I128: VEC_SCALAR_OPERATION(/, res, v1, scalar, i128); break;
+#endif
+#ifdef HAS_U128
+        case VT_U128: VEC_SCALAR_OPERATION(/, res, v1, scalar, u128); break;
+#endif
+        default:
+            fprintf(stderr, "Erro: Tipo de dados não suportado.\n");
+            break;
+    }
+}
+void vec_add_scalar(Vec *res, const Vec *v1, const void *scalar) {
+    if (!res || !v1 || !scalar) return;
+    if (v1->dim != res->dim || v1->type != res->type) {
+        fprintf(stderr, "Erro: Vetores com dimensões ou tipos incompatíveis.\n");
+        return;
+    }
+
+    switch (res->type) {
+#ifdef HAS_I8
+        case VT_I8:   VEC_SCALAR_OPERATION(+, res, v1, scalar, i8); break;
+#endif
+#ifdef HAS_U8
+        case VT_U8:   VEC_SCALAR_OPERATION(+, res, v1, scalar, u8); break;
+#endif
+#ifdef HAS_I16
+        case VT_I16:  VEC_SCALAR_OPERATION(+, res, v1, scalar, i16); break;
+#endif
+#ifdef HAS_U16
+        case VT_U16:  VEC_SCALAR_OPERATION(+, res, v1, scalar, u16); break;
+#endif
+#ifdef HAS_F32
+        case VT_F32:  VEC_SCALAR_OPERATION(+, res, v1, scalar, f32); break;
+#endif
+#ifdef HAS_I32
+        case VT_I32:  VEC_SCALAR_OPERATION(+, res, v1, scalar, i32); break;
+#endif
+#ifdef HAS_U32
+        case VT_U32:  VEC_SCALAR_OPERATION(+, res, v1, scalar, u32); break;
+#endif
+#ifdef HAS_F64
+        case VT_F64:  VEC_SCALAR_OPERATION(+, res, v1, scalar, f64); break;
+#endif
+#ifdef HAS_I64
+        case VT_I64:  VEC_SCALAR_OPERATION(+, res, v1, scalar, i64); break;
+#endif
+#ifdef HAS_U64
+        case VT_U64:  VEC_SCALAR_OPERATION(+, res, v1, scalar, u64); break;
+#endif
+#ifdef HAS_F128
+        case VT_F128: VEC_SCALAR_OPERATION(+, res, v1, scalar, f128); break;
+#endif
+#ifdef HAS_I128
+        case VT_I128: VEC_SCALAR_OPERATION(+, res, v1, scalar, i128); break;
+#endif
+#ifdef HAS_U128
+        case VT_U128: VEC_SCALAR_OPERATION(+, res, v1, scalar, u128); break;
+#endif
+        default:
+            fprintf(stderr, "Erro: Tipo de dados não suportado.\n");
+            break;
+    }
+}
+
+void vec_sub_scalar(Vec *res, const Vec *v1, const void *scalar) {
+    if (!res || !v1 || !scalar) return;
+    if (v1->dim != res->dim || v1->type != res->type) {
+        fprintf(stderr, "Erro: Vetores com dimensões ou tipos incompatíveis.\n");
+        return;
+    }
+
+    switch (res->type) {
+#ifdef HAS_I8
+        case VT_I8:   VEC_SCALAR_OPERATION(-, res, v1, scalar, i8); break;
+#endif
+#ifdef HAS_U8
+        case VT_U8:   VEC_SCALAR_OPERATION(-, res, v1, scalar, u8); break;
+#endif
+#ifdef HAS_I16
+        case VT_I16:  VEC_SCALAR_OPERATION(-, res, v1, scalar, i16); break;
+#endif
+#ifdef HAS_U16
+        case VT_U16:  VEC_SCALAR_OPERATION(-, res, v1, scalar, u16); break;
+#endif
+#ifdef HAS_F32
+        case VT_F32:  VEC_SCALAR_OPERATION(-, res, v1, scalar, f32); break;
+#endif
+#ifdef HAS_I32
+        case VT_I32:  VEC_SCALAR_OPERATION(-, res, v1, scalar, i32); break;
+#endif
+#ifdef HAS_U32
+        case VT_U32:  VEC_SCALAR_OPERATION(-, res, v1, scalar, u32); break;
+#endif
+#ifdef HAS_F64
+        case VT_F64:  VEC_SCALAR_OPERATION(-, res, v1, scalar, f64); break;
+#endif
+#ifdef HAS_I64
+        case VT_I64:  VEC_SCALAR_OPERATION(-, res, v1, scalar, i64); break;
+#endif
+#ifdef HAS_U64
+        case VT_U64:  VEC_SCALAR_OPERATION(-, res, v1, scalar, u64); break;
+#endif
+#ifdef HAS_F128
+        case VT_F128: VEC_SCALAR_OPERATION(-, res, v1, scalar, f128); break;
+#endif
+#ifdef HAS_I128
+        case VT_I128: VEC_SCALAR_OPERATION(-, res, v1, scalar, i128); break;
+#endif
+#ifdef HAS_U128
+        case VT_U128: VEC_SCALAR_OPERATION(-, res, v1, scalar, u128); break;
+#endif
+        default:
+            fprintf(stderr, "Erro: Tipo de dados não suportado.\n");
+            break;
+    }
+}
 
 GenericVec gvec_init(
     usize dimension,

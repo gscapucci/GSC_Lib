@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
-#include <inttypes.h> // Para macros de formatação como PRId64, PRIu64, etc.
+#include <inttypes.h>
 #include <string.h>
 #include <limits.h>
 #include <quadmath.h>
@@ -17,7 +17,7 @@
     #define F32_MAX __FLT32_MAX__
     #define F32_MIN __FLT32_MIN__
 #else
-    #warning "IEEE 754 (float 32-bit) não suportado. f32 não será definido."
+    #error "IEEE 754 (float 32-bit) não suportado. f32 não será definido."
 #endif
 
 // Verifica suporte a IEEE 754 para double (64 bits)
@@ -28,7 +28,7 @@
     #define F64_MAX __FLT64_MAX__
     #define F64_MIN __FLT64_MIN__
 #else
-    #warning "IEEE 754 (double 64-bit) não suportado. f64 não será definido."
+    #error "IEEE 754 (double 64-bit) não suportado. f64 não será definido."
 #endif
 
 // Verifica suporte a long double (80 bits ou 128 bits)
@@ -44,97 +44,90 @@
     #define PRIf128 "Lf"
     #define F128_MAX __LDBL_MAX__
     #define F128_MIN __LDBL_MIN__
-#else
-    #warning "long double de 80 ou 128 bits não suportado. f80 não será definido."
 #endif
 
 // Verifica suporte a __float128 (128 bits)
-#ifndef f128
-#if defined(__SIZEOF_FLOAT128__) // GCC/Clang suportam __float128
-    #define HAS_F128
-    typedef __float128 f128;
-    #define PRIf128 "Qe"
-    #define F128_MAX __FLT128_MAX__
-    #define F128_MIN __FLT128_MIN__
-    #include <quadmath.h> // Para quadmath_snprintf
-    // maximum is 34 digits
+#ifndef HAS_F128
+    #if defined(__SIZEOF_FLOAT128__)
+        #define HAS_F128
+        #include <quadmath.h>
+        typedef __float128 f128;
+        #define PRIf128 "Qe"
+        #define F128_MAX __FLT128_MAX__
+        #define F128_MIN __FLT128_MIN__
+    #endif
+#endif
+
+#ifdef HAS_F128
     static inline int f128_to_str(char *buffer, size_t buffer_size, size_t num_digits_to_print, f128 num) {
-        char fmt[10] = {0};
-        sprintf(fmt, "%%.%zu"PRIf128, num_digits_to_print);
-        if(num_digits_to_print > 34) {
+        if (num_digits_to_print > 34) {
             num_digits_to_print = 34;
         }
-        return quadmath_snprintf(buffer, buffer_size, fmt, num);
+        return quadmath_snprintf(buffer, buffer_size, "%+.34Qe", num);
     }
-    // maximum is 34 digits
-    static inline int print_f128(f128 num, size_t num_digits) {
-        if(num_digits > 34) {
-            num_digits = 34;
+
+    static inline int print_f128(f128 num) {
+        char buf[128] = {0};
+        if (f128_to_str(buf, sizeof(buf), 34, num) < 0) {
+            return -1;
         }
-        char buf[36] = {0};
-        return f128_to_str(buf, 36, num_digits, num) & printf("%s", buf);
+        return printf("%s", buf);
     }
-    #warning "Using quadmath for f128."
-#else
-    #warning "__float128 não suportado. f128 não será definido."
 #endif
-#endif
+
 // Tipos inteiros padrão
+#define HAS_I8
 typedef int8_t i8;
+#define HAS_I16
 typedef int16_t i16;
+#define HAS_I32
 typedef int32_t i32;
+#define HAS_I64
 typedef int64_t i64;
 
+
+#define HAS_U8
 typedef uint8_t u8;
+#define HAS_U16
 typedef uint16_t u16;
+#define HAS_U32
 typedef uint32_t u32;
+#define HAS_U64
 typedef uint64_t u64;
 
+#define HAS_USIZE
 typedef uintptr_t usize;
+#define HAS_ISIZE
 typedef intptr_t isize;
 
 // Tipos de 128 bits
-#if defined(__SIZEOF_INT128__)// GCC/Clang suportam __int128
+#if defined(__SIZEOF_INT128__)
     #define HAS_I128
     #define HAS_U128
     typedef __int128 i128;
     typedef unsigned __int128 u128;
 
-    static inline i128 INT128_MAX() {
-        return ~((i128)1 << 127);
-    }
-    static inline i128 INT128_MIN() {
-        return ((i128)1 << 127);
-    }
-    static inline u128 UINT128_MAX() {
-        return (u128)-1;
-    }
-    static inline u128 UINT128_MIN() {
-        return ((u128)0);
-    }
-    
+    static inline i128 INT128_MAX() { return ~((i128)1 << 127); }
+    static inline i128 INT128_MIN() { return ((i128)1 << 127); }
+    static inline u128 UINT128_MAX() { return (u128)-1; }
+    static inline u128 UINT128_MIN() { return ((u128)0); }
+
     static inline int u128_to_str(char *buffer, u128 num) {
         if (num == 0) {
             buffer[0] = '0';
             buffer[1] = '\0';
             return 1;
         }
-    
-        char temp[40]; // Um u128 tem no máximo 39 dígitos decimais
+        char temp[40];
         int index = 0;
-    
-        // Converte o número para string (em ordem reversa)
         while (num > 0) {
             temp[index++] = '0' + (num % 10);
             num /= 10;
         }
-    
-        // Inverte a string para obter a ordem correta
         for (int i = 0; i < index; i++) {
             buffer[i] = temp[index - 1 - i];
         }
-        buffer[index] = '\0'; // Adiciona o terminador nulo
-    
+        buffer[index] = '\0';
         return index;
     }
 
@@ -151,7 +144,13 @@ typedef intptr_t isize;
             return 1;
         }
     
-        char temp[40]; // Um i128 tem no máximo 39 dígitos decimais
+        if (num == INT128_MIN()) {
+            // Trata o caso especial de INT128_MIN separadamente, pois -INT128_MIN() causa overflow
+            strcpy(buffer, "-170141183460469231731687303715884105728");
+            return strlen(buffer);
+        }
+    
+        char temp[40]; // i128 tem no máximo 39 dígitos decimais + sinal
         int index = 0;
         int is_negative = 0;
     
@@ -161,7 +160,7 @@ typedef intptr_t isize;
             num = -num; // Converte para positivo
         }
     
-        // Converte o número para string (em ordem reversa)
+        // Converte o número para string (ordem reversa)
         while (num > 0) {
             temp[index++] = '0' + (num % 10);
             num /= 10;
@@ -186,7 +185,7 @@ typedef intptr_t isize;
         return index;
     }
     
-    // Função para imprimir i128
+
     static inline int print_i128(i128 num) {
         char buffer[40];
         i128_to_str(buffer, num);
@@ -194,8 +193,7 @@ typedef intptr_t isize;
     }
 
 #else
-    // Fallback para compiladores sem suporte a 128 bits
-    #warning "Inteiros de 128 bits não suportados. i128 e u128 não serão definidos."
+    #warning "Inteiros de 128 bits não suportados."
 #endif
 
 #endif /* NUMDEF_H */

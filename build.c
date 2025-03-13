@@ -45,6 +45,18 @@ int main(int argc, char **argv) {
             exit(1);
             break;
     }
+    if (!is_libquadmath_installed()) {
+        fprintf(stderr, "Error: libquadmath is not installed on the system.\n");
+        fprintf(stderr, "Please install the library before proceeding.\n");
+    #if defined(__linux__)
+        fprintf(stderr, "On Linux, use: sudo apt-get install libquadmath0\n");
+    #elif defined(_WIN32)
+        fprintf(stderr, "On Windows, install MinGW or MSYS2 with libquadmath support.\n");
+    #elif defined(__APPLE__)
+        fprintf(stderr, "On macOS, install GCC via Homebrew: brew install gcc\n");
+    #endif
+        exit(1);
+    }
     fflush(stdout);
     // printf("Test\n");
     switch (argc) {

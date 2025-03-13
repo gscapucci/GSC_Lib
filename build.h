@@ -320,5 +320,23 @@ static void buildsys_clear(BuildSystem *bs) {
     }
 }
 
+bool is_libquadmath_installed() {
+    int result;
+#if defined(__linux__) || defined(__APPLE__)
+    // Verifica no Linux ou macOS usando ldconfig ou find
+    result = system("ldconfig -p | grep libquadmath > /dev/null 2>&1");
+    if (result != 0) {
+        result = system("find /usr/lib /usr/local/lib -name 'libquadmath*' > /dev/null 2>&1");
+    }
+#elif defined(_WIN32)
+    // Verifica no Windows usando where (ou dir)
+    result = system("where libquadmath.dll > nul 2>&1");
+    if (result != 0) {
+        result = system("dir C:\\MinGW\\lib\\libquadmath.* > nul 2>&1");
+    }
+#endif
+    return (result == 0); // Retorna true se a biblioteca estiver instalada
+}
+
 
 #endif /* BUILD_H */
